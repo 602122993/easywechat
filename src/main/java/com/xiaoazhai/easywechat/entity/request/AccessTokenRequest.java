@@ -1,5 +1,7 @@
 package com.xiaoazhai.easywechat.entity.request;
 
+import com.xiaoazhai.easywechat.entity.response.AccessTokenResponse;
+import com.xiaoazhai.easywechat.util.WxPubUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,6 +33,8 @@ public class AccessTokenRequest {
      * 请求方式
      */
     private String grantType;
+
+
 
 
 

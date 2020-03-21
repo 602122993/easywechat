@@ -12,20 +12,14 @@ public class JSSDKResponse extends ErrorResponse {
      */
     private String noncestr;
     /**
-     * js票据
-     */
-    private String jsapiTicket;
-    /**
      * 时间戳
      */
     private Long timestamp;
-    /**
-     * 授权地址
-     */
-    private String url;
+
     /**
      * 签名
      */
     private String sign;
+    private String appid;
 
 }

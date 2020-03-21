@@ -75,4 +75,6 @@ public class WxUserInfoResponse {
 
     private String qrSceneStr;
 
+    private List<WxUserInfoResponse> userInfoList;
+
 }

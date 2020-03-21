@@ -15,7 +15,9 @@ import com.xiaoazhai.easywechat.entity.response.ErrorResponse;
 import com.xiaoazhai.easywechat.entity.response.JSSDKResponse;
 import com.xiaoazhai.easywechat.entity.response.WxUserInfoResponse;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -43,6 +45,22 @@ public class WxPubUtil {
 
     public static WxUserInfoResponse getWxPubUserInfoByOpenId(String openId, AccessTokenRequest request) {
         return getWxPubUserInfoByOpenId(openId, getAccessToken(request).getAccessToken());
+    }
+
+    public static List<WxUserInfoResponse> getWxPubUserInfoByOpenId(List<String> openIdList) {
+        return getWxPubUserInfoByOpenId(openIdList, getAccessToken().getAccessToken());
+    }
+
+    public static List<WxUserInfoResponse> getWxPubUserInfoByOpenId(List<String> openIdList, String accessToken) {
+        List<WxUserInfoRequest> list = new ArrayList<>();
+        openIdList.forEach(openid -> list.add(WxUserInfoRequest.builder().openid(openid).build()));
+        Map map = new HashMap();
+        map.put("user_list", list);
+        return WxRequestUtil.post(WxConstants.USE_INFO, map, WxUserInfoResponse.class).getUserInfoList();
+    }
+
+    public static List<WxUserInfoResponse> getWxPubUserInfoByOpenId(List<String> openIdList, AccessTokenRequest request) {
+        return getWxPubUserInfoByOpenId(openIdList, getAccessToken(request).getAccessToken());
     }
 
     /**
@@ -144,11 +162,10 @@ public class WxPubUtil {
         map.put("url", url);
         String sign = SecureUtil.sha1(SignUtil.sortByASCII(map));
         JSSDKResponse jssdkResponse = new JSSDKResponse();
-        jssdkResponse.setJsapiTicket(ticket);
         jssdkResponse.setNoncestr(noncestr);
         jssdkResponse.setTimestamp(timestamp);
         jssdkResponse.setSign(sign);
-        jssdkResponse.setUrl(url);
+        jssdkResponse.setAppid(WxConfig.pubAppId);
         return jssdkResponse;
     }
 

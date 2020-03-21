@@ -6,6 +6,8 @@ import lombok.Data;
 import org.springframework.util.StringUtils;
 
 /**
+ * @author zhai
+ * @date 2020年3月5日11:15:04
  * 统一返回结果
  */
 @Data

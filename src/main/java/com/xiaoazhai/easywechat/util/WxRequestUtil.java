@@ -65,7 +65,6 @@ public class WxRequestUtil {
         return BeanUtil.mapToBean(result, resultClass, copyOptions);
     }
 
-
     /***
      * 驼峰命名转为下划线命名
      *

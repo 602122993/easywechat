@@ -1,9 +1,12 @@
 package com.xiaoazhai.easywechat.entity.request;
 
+import com.xiaoazhai.easywechat.util.WxPubUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 /**
  * @author zhai
@@ -29,4 +32,5 @@ public class WxUserInfoRequest {
      * 返回国家地区语言版本，zh_CN 简体，zh_TW 繁体，en 英语
      */
     private String lang;
+
 }
