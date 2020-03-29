@@ -38,9 +38,17 @@ public class WxRedPackageRequest {
      */
     private String mchId;
     /**
+     * 子商户号
+     */
+    private String subMchId;
+    /**
      * 微信公众号appid
      */
     private String wxappid;
+    /**
+     * 触达用户appid
+     */
+    private String msgappid;
     /**
      * 商户名称
      */
@@ -57,6 +65,10 @@ public class WxRedPackageRequest {
      * 红包发放总人数
      */
     private Integer totalNum;
+    /**
+     * 红包发放方式
+     */
+    private String amtType;
     /**
      * 祝福语
      */
@@ -92,6 +104,7 @@ public class WxRedPackageRequest {
     public WxRedPackResponse execute() {
         return WxPayUtil.sendRedPack(this);
     }
+
 
 }
 

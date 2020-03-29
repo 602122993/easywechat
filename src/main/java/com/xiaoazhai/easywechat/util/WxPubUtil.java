@@ -2,6 +2,7 @@ package com.xiaoazhai.easywechat.util;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
+import cn.hutool.core.util.URLUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
@@ -148,6 +149,7 @@ public class WxPubUtil {
     }
 
     public static JSSDKResponse getJsSign(String accessToken, String url) {
+        url = URLUtil.decode(url);
         Map<String, Object> map = new HashMap<>();
         map.put("access_token", accessToken);
         map.put("type", "jsapi");
