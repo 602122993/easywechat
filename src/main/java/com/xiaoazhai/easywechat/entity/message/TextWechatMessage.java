@@ -9,4 +9,14 @@ import lombok.Data;
  */
 @Data
 public class TextWechatMessage extends BaseWechatMessage {
+
+    /**
+     * 文本内容
+     */
+    private String content;
+    /**
+     * 消息id
+     */
+    private String msgId;
+
 }

@@ -18,12 +18,16 @@ public abstract class AbstractMessageHandler<T extends BaseWechatMessage> {
      */
     public final static Map<String, AbstractMessageHandler> registerMap = new HashMap<>();
 
+    public final static String SUCCESS = "success";
+    public final static String CONTINUE = "success";
+
     /**
      * 消息处理
      *
      * @param message
+     * @return obj
      */
-    public abstract void onMessage(T message);
+    public abstract Object onMessage(T message);
 
 
 }

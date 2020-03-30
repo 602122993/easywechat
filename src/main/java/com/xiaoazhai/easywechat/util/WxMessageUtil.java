@@ -1,6 +1,7 @@
 package com.xiaoazhai.easywechat.util;
 
 import com.xiaoazhai.easywechat.entity.message.AllTypeWechatMessage;
+import com.xiaoazhai.easywechat.entity.message.BaseWechatMessage;
 
 /**
  * @author zhai
@@ -10,8 +11,8 @@ import com.xiaoazhai.easywechat.entity.message.AllTypeWechatMessage;
 public class WxMessageUtil {
 
 
-    public static AllTypeWechatMessage castToWechatMessage(String message) {
-        return XmlUtil.xmlToBean(message, true, AllTypeWechatMessage.class, true);
+    public static BaseWechatMessage castToWechatMessage(String message, Class<? extends BaseWechatMessage> clazz) {
+        return XmlUtil.xmlToBean(message, true,clazz, true);
     }
 
 
