@@ -3,7 +3,8 @@ package com.xiaoazhai.easywechat.aspect;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.http.HttpUtil;
 import com.xiaoazhai.easywechat.annotation.Message;
-import com.xiaoazhai.easywechat.entity.request.WechatMessage;
+import com.xiaoazhai.easywechat.entity.message.AllTypeWechatMessage;
+import com.xiaoazhai.easywechat.entity.message.BaseWechatMessage;
 import com.xiaoazhai.easywechat.util.WxMessageUtil;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -13,12 +14,17 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * @author zhai
+ * @date 2020年3月30日18:47:45
+ * 微信消息参数拦截器
+ */
 public class WechatMessageMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        if (parameter.getParameterType().isAssignableFrom(WechatMessage.class) && parameter.hasParameterAnnotation(Message.class)) {
+        if (parameter.getParameterType().isAssignableFrom(AllTypeWechatMessage.class) && parameter.hasParameterAnnotation(Message.class)) {
             return true;
         }
         return false;
