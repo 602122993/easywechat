@@ -1,6 +1,5 @@
 package com.xiaoazhai.easywechat.util;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 
 import java.util.HashMap;
@@ -30,14 +29,18 @@ public class XmlUtil extends cn.hutool.core.util.XmlUtil {
         return BeanUtil.mapToBean(result, clazz, copyOptions);
     }
 
-    public static <T> String beanToXml(T bean) {
+    public static <T> String beanToXml(T bean, boolean isToFirstUpperCase) {
         String result = "";
         try {
-            result = mapToXml(BeanUtil.beanToMap(bean, true, true));
+            result = mapToXml(BeanUtil.beanToMap(bean, isToFirstUpperCase, true, true));
         } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public static <T> String beanToXml(T bean) {
+        return beanToXml(bean, false);
     }
 
     /**

@@ -50,5 +50,10 @@ public class WxConstants {
      * 获取用户信息
      */
     public static final String USE_INFO = "https://api.weixin.qq.com/cgi-bin/user/info";
+    /**
+     * 上传临时素材
+     */
+    public static final String UPLOAD_SHORE_TIME_SOURCE = "https://api.weixin.qq.com/cgi-bin/media/upload";
+
 
 }

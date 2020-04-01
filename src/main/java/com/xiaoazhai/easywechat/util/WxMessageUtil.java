@@ -1,7 +1,23 @@
 package com.xiaoazhai.easywechat.util;
 
-import com.xiaoazhai.easywechat.entity.message.AllTypeWechatMessage;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import com.xiaoazhai.easywechat.constants.WxConstants;
 import com.xiaoazhai.easywechat.entity.message.BaseWechatMessage;
+import com.xiaoazhai.easywechat.entity.message.respmsg.ReturnWechatMessage;
+import com.xiaoazhai.easywechat.entity.request.AccessTokenRequest;
+import com.xiaoazhai.easywechat.entity.request.WxPayRequest;
+import com.xiaoazhai.easywechat.enums.MsgTypeEnum;
+import com.xiaoazhai.easywechat.exception.WxPubException;
+import org.springframework.util.StringUtils;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author zhai
@@ -12,8 +28,22 @@ public class WxMessageUtil {
 
 
     public static BaseWechatMessage castToWechatMessage(String message, Class<? extends BaseWechatMessage> clazz) {
-        return XmlUtil.xmlToBean(message, true,clazz, true);
+        return XmlUtil.xmlToBean(message, true, clazz, true);
     }
 
 
+    public static String formatReturnMessage(ReturnWechatMessage obj) {
+        return null;
+    }
+
+    public static String uploadShoreTimeFile(InputStream inputStream, MsgTypeEnum typeEnum) {
+        JSONObject response = JSONUtil.parseObj(HttpUtil.createPost(WxConstants.UPLOAD_SHORE_TIME_SOURCE).form("media", IoUtil.readBytes(inputStream), "file")
+                .form("access_token", WxPubUtil.getAccessToken())
+                .form("type", typeEnum.toString())
+                .execute().body());
+        if (StringUtils.isEmpty(response.getStr("errcode"))) {
+            return response.getStr("media_id");
+        }
+        throw new WxPubException(response.getStr("errmsg"));
+    }
 }

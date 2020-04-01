@@ -35,6 +35,8 @@ public class AccessTokenRequest {
     private String grantType;
 
 
+    private WxPayRequest request;
+
 
 
 

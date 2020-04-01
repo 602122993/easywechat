@@ -3,12 +3,10 @@ package com.xiaoazhai.easywechat.aspect;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.http.ContentType;
-import cn.hutool.http.HttpUtil;
 import com.xiaoazhai.easywechat.annotation.Message;
 import com.xiaoazhai.easywechat.entity.message.AllTypeWechatMessage;
 import com.xiaoazhai.easywechat.entity.message.BaseWechatMessage;
-import com.xiaoazhai.easywechat.entity.message.ReturnWechatMessage;
-import com.xiaoazhai.easywechat.entity.message.TextWechatMessage;
+import com.xiaoazhai.easywechat.entity.message.respmsg.ReturnWechatMessage;
 import com.xiaoazhai.easywechat.util.WxMessageUtil;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -55,7 +53,7 @@ public class WechatMessageMethodArgumentResolver implements HandlerMethodArgumen
             }
 
             if (obj instanceof ReturnWechatMessage) {
-
+                WxMessageUtil.formatReturnMessage((ReturnWechatMessage) obj);
             }
 
         }
