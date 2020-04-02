@@ -3,6 +3,7 @@ package com.xiaoazhai.easywechat.util;
 import com.xiaoazhai.easywechat.entity.message.respmsg.ReturnMessageInterface;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,10 +20,19 @@ public class BeanUtil extends cn.hutool.core.bean.BeanUtil {
             Map<String, Object> resultMap = new HashMap<>();
             map.forEach((key, value) -> {
                 if (value instanceof ReturnMessageInterface) {
-                    map.put(key.replace(key.charAt(0), Character.toUpperCase(key.charAt(0))), XmlUtil.beanToXml(value, true));
+                    resultMap.put(key.replace(key.charAt(0), Character.toUpperCase(key.charAt(0))), XmlUtil.beanToXml(value, true));
+                } else if (value instanceof List) {
+                    StringBuilder sb = new StringBuilder();
+                    ((List) value).forEach(v -> {
+                        if (v instanceof ReturnMessageInterface) {
+                            sb.append(XmlUtil.beanToXml(v, true));
+                        }
+                    });
+                    resultMap.put(key.replace(key.charAt(0), Character.toUpperCase(key.charAt(0))), sb);
                 } else {
-                    map.put(key.replace(key.charAt(0), Character.toUpperCase(key.charAt(0))), value);
+                    resultMap.put(key.replace(key.charAt(0), Character.toUpperCase(key.charAt(0))), value);
                 }
+
 
             });
             return resultMap;

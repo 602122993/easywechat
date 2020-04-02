@@ -1,6 +1,7 @@
 package com.xiaoazhai.easywechat.util;
 
 import cn.hutool.core.bean.copier.CopyOptions;
+import cn.hutool.core.util.ReUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +37,7 @@ public class XmlUtil extends cn.hutool.core.util.XmlUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return result;
+        return ReUtil.delFirst("\\<\\?.*\\?\\>", result);
     }
 
     public static <T> String beanToXml(T bean) {

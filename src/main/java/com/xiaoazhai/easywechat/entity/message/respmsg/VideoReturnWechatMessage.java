@@ -1,19 +1,11 @@
 package com.xiaoazhai.easywechat.entity.message.respmsg;
 
-import cn.hutool.core.io.IoUtil;
-import cn.hutool.http.HttpUtil;
-import com.xiaoazhai.easywechat.util.WxMessageUtil;
 import com.xiaoazhai.easywechat.util.XmlUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 
 /**
  * @author zhai
@@ -24,25 +16,47 @@ import java.io.InputStream;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImageReturnWechatMessage extends ReturnWechatMessage {
+public class VideoReturnWechatMessage extends ReturnWechatMessage {
 
     /**
-     * 图片内部类
+     * 语音内部类
      */
-    private Image image;
+    private Video video;
     /**
-     * 图片文件内容,支持File String InputStream
+     * 语音文件内容,支持File String InputStream
      */
     private Object file;
-
+    /**
+     * 素材id
+     */
     private String mediaId;
+    /**
+     * 视频标题
+     */
+    private String title;
+    /**
+     * 视频描述
+     */
+    private String description;
 
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    private class Image implements ReturnMessageInterface {
+    private class Video implements ReturnMessageInterface {
+        /**
+         * 素材id
+         */
         private String mediaId;
+        /**
+         * 视频标题
+         */
+        private String title;
+        /**
+         * 视频描述
+         */
+        private String description;
+
     }
 
     @Override
@@ -50,7 +64,7 @@ public class ImageReturnWechatMessage extends ReturnWechatMessage {
         if (StringUtils.isEmpty(mediaId)) {
             mediaId  = getMediaId(file);
         }
-        image = new Image(mediaId);
+        video = new Video(mediaId, title, description);
         doEmpty();
         return XmlUtil.beanToXml(this, true);
     }
@@ -58,9 +72,9 @@ public class ImageReturnWechatMessage extends ReturnWechatMessage {
     private void doEmpty() {
         file = null;
         mediaId = null;
+        title = null;
+        description = null;
     }
-
-
 
 
 }

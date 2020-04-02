@@ -1,6 +1,5 @@
 package com.xiaoazhai.easywechat.entity.message.respmsg;
 
-import cn.hutool.core.io.IoUtil;
 import cn.hutool.http.HttpUtil;
 import com.xiaoazhai.easywechat.util.WxMessageUtil;
 import com.xiaoazhai.easywechat.util.XmlUtil;
@@ -24,14 +23,14 @@ import java.io.InputStream;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImageReturnWechatMessage extends ReturnWechatMessage {
+public class VoiceReturnWechatMessage extends ReturnWechatMessage {
 
     /**
-     * 图片内部类
+     * 语音内部类
      */
-    private Image image;
+    private Voice voice;
     /**
-     * 图片文件内容,支持File String InputStream
+     * 语音文件内容,支持File String InputStream
      */
     private Object file;
 
@@ -41,7 +40,7 @@ public class ImageReturnWechatMessage extends ReturnWechatMessage {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    private class Image implements ReturnMessageInterface {
+    private class Voice implements ReturnMessageInterface {
         private String mediaId;
     }
 
@@ -50,7 +49,7 @@ public class ImageReturnWechatMessage extends ReturnWechatMessage {
         if (StringUtils.isEmpty(mediaId)) {
             mediaId  = getMediaId(file);
         }
-        image = new Image(mediaId);
+        voice = new Voice(mediaId);
         doEmpty();
         return XmlUtil.beanToXml(this, true);
     }
@@ -59,8 +58,6 @@ public class ImageReturnWechatMessage extends ReturnWechatMessage {
         file = null;
         mediaId = null;
     }
-
-
 
 
 }
