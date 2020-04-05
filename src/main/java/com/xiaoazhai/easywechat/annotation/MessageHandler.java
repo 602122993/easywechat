@@ -1,6 +1,7 @@
 package com.xiaoazhai.easywechat.annotation;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.lang.annotation.*;
 
@@ -14,5 +15,4 @@ import java.lang.annotation.*;
 @Documented
 @Component
 public @interface MessageHandler {
-
 }

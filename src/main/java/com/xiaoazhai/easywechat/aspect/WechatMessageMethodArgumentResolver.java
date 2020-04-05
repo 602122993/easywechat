@@ -1,6 +1,8 @@
 package com.xiaoazhai.easywechat.aspect;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.http.ContentType;
 import com.xiaoazhai.easywechat.annotation.Message;
@@ -16,6 +18,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 
 /**
  * @author zhai
@@ -38,27 +41,33 @@ public class WechatMessageMethodArgumentResolver implements HandlerMethodArgumen
         HttpServletRequest request = nativeWebRequest.getNativeRequest(HttpServletRequest.class);
         String body = IoUtil.read(request.getReader());
         BaseWechatMessage baseWechat = WxMessageUtil.castToWechatMessage(body, BaseWechatMessage.class);
+        ReturnWechatMessage.threadLocal.set(baseWechat);
         HttpServletResponse response = nativeWebRequest.getNativeResponse(HttpServletResponse.class);
         AbstractMessageHandler abs = AbstractMessageHandler.registerMap.get(baseWechat.getMsgType().getClazz().getName());
         if (abs != null) {
             Object obj = abs.onMessage(WxMessageUtil.castToWechatMessage(body, baseWechat.getMsgType().getClazz()));
             if (obj instanceof String) {
                 if (obj.equals(AbstractMessageHandler.SUCCESS)) {
-                    ServletUtil.write(response, obj.toString(), ContentType.JSON.toString());
+                    IoUtil.write(response.getOutputStream(), CharsetUtil.UTF_8, true, obj.toString());
                     return null;
                 }
                 if (obj.equals(AbstractMessageHandler.CONTINUE)) {
                     return WxMessageUtil.castToWechatMessage(body, AllTypeWechatMessage.class);
                 }
             }
-
             if (obj instanceof ReturnWechatMessage) {
-                WxMessageUtil.formatReturnMessage((ReturnWechatMessage) obj);
+                IoUtil.write(response.getOutputStream(), CharsetUtil.UTF_8, true, ((ReturnWechatMessage) obj).getReturnMessage());
+                return null;
             }
 
         }
-        return null;
+        return WxMessageUtil.castToWechatMessage(body, AllTypeWechatMessage.class);
     }
 
+
+    public static void main(String[] args) {
+
+        System.out.println();
+    }
 
 }

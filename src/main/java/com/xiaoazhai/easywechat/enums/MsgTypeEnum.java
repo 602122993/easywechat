@@ -12,12 +12,14 @@ public enum MsgTypeEnum {
      * 消息文本
      */
     text(TextWechatMessage.class),
+    article(null),
     image(ImageWechatMessage.class),
     voice(VoiceWechatMessage.class),
     video(VideoWechatMessage.class),
     shortvideo(VideoWechatMessage.class),
     location(LocationWechatMessage.class),
     link(LinkWechatMessage.class),
+    music(null),
     event(EventWechatMessage.class);
 
     private Class<? extends BaseWechatMessage> clazz;

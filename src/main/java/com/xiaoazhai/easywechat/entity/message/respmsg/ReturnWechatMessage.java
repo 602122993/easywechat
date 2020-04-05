@@ -20,6 +20,7 @@ import java.io.InputStream;
 @Data
 public abstract class ReturnWechatMessage extends BaseWechatMessage {
 
+    public static ThreadLocal<BaseWechatMessage> threadLocal = new ThreadLocal<>();
 
     /**
      * 获取返回值消息
@@ -27,6 +28,14 @@ public abstract class ReturnWechatMessage extends BaseWechatMessage {
      * @return
      */
     public abstract String getReturnMessage();
+
+    public void initMessage(BaseWechatMessage baseWechatMessage) {
+        BaseWechatMessage message = threadLocal.get();
+        baseWechatMessage.setToUserName(message.getFromUserName());
+        baseWechatMessage.setFromUserName(message.getToUserName());
+        baseWechatMessage.setCreateTime(System.currentTimeMillis() / 1000);
+        threadLocal.remove();
+    }
 
 
     public String getMediaId(Object file) {
@@ -63,5 +72,6 @@ public abstract class ReturnWechatMessage extends BaseWechatMessage {
     private String getMediaId(InputStream inputStream) {
         return WxMessageUtil.uploadShoreTimeFile(inputStream, getMsgType());
     }
+
 
 }

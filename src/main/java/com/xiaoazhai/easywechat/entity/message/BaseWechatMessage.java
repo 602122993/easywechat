@@ -3,7 +3,10 @@ package com.xiaoazhai.easywechat.entity.message;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import com.xiaoazhai.easywechat.enums.MsgTypeEnum;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -27,7 +30,7 @@ public class BaseWechatMessage {
     /**
      * 创建时间
      */
-    private Date createTime;
+    private Long createTime;
     /**
      * 消息类型枚举
      */

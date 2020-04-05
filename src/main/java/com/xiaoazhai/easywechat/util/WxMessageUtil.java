@@ -32,13 +32,9 @@ public class WxMessageUtil {
     }
 
 
-    public static String formatReturnMessage(ReturnWechatMessage obj) {
-        return null;
-    }
-
     public static String uploadShoreTimeFile(InputStream inputStream, MsgTypeEnum typeEnum) {
-        JSONObject response = JSONUtil.parseObj(HttpUtil.createPost(WxConstants.UPLOAD_SHORE_TIME_SOURCE).form("media", IoUtil.readBytes(inputStream), "file")
-                .form("access_token", WxPubUtil.getAccessToken())
+        JSONObject response = JSONUtil.parseObj(HttpUtil.createPost(WxConstants.UPLOAD_SHORE_TIME_SOURCE).form("media", IoUtil.readBytes(inputStream), "file.jpg")
+                .form("access_token", WxPubUtil.getAccessToken().getAccessToken())
                 .form("type", typeEnum.toString())
                 .execute().body());
         if (StringUtils.isEmpty(response.getStr("errcode"))) {

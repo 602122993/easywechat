@@ -1,6 +1,7 @@
 package com.xiaoazhai.easywechat.entity.message.respmsg;
 
 import cn.hutool.core.util.ReUtil;
+import com.xiaoazhai.easywechat.enums.MsgTypeEnum;
 import com.xiaoazhai.easywechat.util.BeanUtil;
 import com.xiaoazhai.easywechat.util.XmlUtil;
 import lombok.AllArgsConstructor;
@@ -57,8 +58,9 @@ public class ArticleReturnWechatMessage extends ReturnWechatMessage {
 
     @Override
     public String getReturnMessage() {
-
         doEmpty();
+        setMsgType(MsgTypeEnum.article);
+        initMessage(this);
         return XmlUtil.beanToXml(this, true);
     }
 

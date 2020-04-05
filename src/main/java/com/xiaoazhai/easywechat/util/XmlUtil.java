@@ -18,6 +18,9 @@ public class XmlUtil extends cn.hutool.core.util.XmlUtil {
         Map<String, Object> result = new HashMap<>();
         if (isToHump) {
             map.forEach((key, value) -> {
+                if ("CreateTime".equals(key)) {
+                    value = Long.valueOf(value.toString()) / 1000;
+                }
                 if (key.length() > 0 && Character.isUpperCase(key.charAt(0))) {
                     result.put(key.replace(key.charAt(0), Character.toLowerCase(key.charAt(0))), value);
                 } else {
@@ -33,7 +36,7 @@ public class XmlUtil extends cn.hutool.core.util.XmlUtil {
     public static <T> String beanToXml(T bean, boolean isToFirstUpperCase) {
         String result = "";
         try {
-            result = mapToXml(BeanUtil.beanToMap(bean, isToFirstUpperCase, true, true));
+            result = mapToXml(BeanUtil.beanToMap(bean, isToFirstUpperCase, false, true));
         } catch (Exception e) {
             e.printStackTrace();
         }

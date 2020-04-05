@@ -1,5 +1,6 @@
 package com.xiaoazhai.easywechat.entity.message.respmsg;
 
+import com.xiaoazhai.easywechat.enums.MsgTypeEnum;
 import com.xiaoazhai.easywechat.util.XmlUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -61,11 +62,13 @@ public class VideoReturnWechatMessage extends ReturnWechatMessage {
 
     @Override
     public String getReturnMessage() {
+        setMsgType(MsgTypeEnum.video);
         if (StringUtils.isEmpty(mediaId)) {
             mediaId  = getMediaId(file);
         }
         video = new Video(mediaId, title, description);
         doEmpty();
+        initMessage(this);
         return XmlUtil.beanToXml(this, true);
     }
 

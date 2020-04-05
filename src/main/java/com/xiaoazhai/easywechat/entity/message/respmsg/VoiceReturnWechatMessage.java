@@ -1,6 +1,7 @@
 package com.xiaoazhai.easywechat.entity.message.respmsg;
 
 import cn.hutool.http.HttpUtil;
+import com.xiaoazhai.easywechat.enums.MsgTypeEnum;
 import com.xiaoazhai.easywechat.util.WxMessageUtil;
 import com.xiaoazhai.easywechat.util.XmlUtil;
 import lombok.AllArgsConstructor;
@@ -46,11 +47,13 @@ public class VoiceReturnWechatMessage extends ReturnWechatMessage {
 
     @Override
     public String getReturnMessage() {
+        setMsgType(MsgTypeEnum.voice);
         if (StringUtils.isEmpty(mediaId)) {
             mediaId  = getMediaId(file);
         }
         voice = new Voice(mediaId);
         doEmpty();
+        initMessage(this);
         return XmlUtil.beanToXml(this, true);
     }
 

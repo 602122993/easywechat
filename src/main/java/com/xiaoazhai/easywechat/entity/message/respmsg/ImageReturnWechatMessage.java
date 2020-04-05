@@ -2,6 +2,7 @@ package com.xiaoazhai.easywechat.entity.message.respmsg;
 
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.http.HttpUtil;
+import com.xiaoazhai.easywechat.enums.MsgTypeEnum;
 import com.xiaoazhai.easywechat.util.WxMessageUtil;
 import com.xiaoazhai.easywechat.util.XmlUtil;
 import lombok.AllArgsConstructor;
@@ -47,11 +48,13 @@ public class ImageReturnWechatMessage extends ReturnWechatMessage {
 
     @Override
     public String getReturnMessage() {
+        setMsgType(MsgTypeEnum.image);
         if (StringUtils.isEmpty(mediaId)) {
             mediaId  = getMediaId(file);
         }
         image = new Image(mediaId);
         doEmpty();
+        initMessage(this);
         return XmlUtil.beanToXml(this, true);
     }
 
