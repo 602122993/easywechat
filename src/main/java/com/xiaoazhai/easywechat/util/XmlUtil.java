@@ -2,6 +2,9 @@ package com.xiaoazhai.easywechat.util;
 
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.util.ReUtil;
+import com.xiaoazhai.easywechat.entity.message.ImageWechatMessage;
+import com.xiaoazhai.easywechat.entity.message.respmsg.ImageReturnWechatMessage;
+import com.xiaoazhai.easywechat.entity.message.respmsg.TextReturnWechatMessage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +37,7 @@ public class XmlUtil extends cn.hutool.core.util.XmlUtil {
     }
 
     public static <T> String beanToXml(T bean, boolean isToFirstUpperCase) {
+
         String result = "";
         try {
             result = mapToXml(BeanUtil.beanToMap(bean, isToFirstUpperCase, false, true));
@@ -70,4 +74,13 @@ public class XmlUtil extends cn.hutool.core.util.XmlUtil {
         }
         return result.toString();
     }
+
+    public static void main(String[] args) {
+        ImageReturnWechatMessage msg = new ImageReturnWechatMessage();
+        ImageReturnWechatMessage.Image image = new ImageReturnWechatMessage.Image();
+        msg.setImage(image);
+        image.setMediaId("asdf");
+        System.out.println(BeanUtil.beanToMap(msg, false, false, true));
+    }
 }
+

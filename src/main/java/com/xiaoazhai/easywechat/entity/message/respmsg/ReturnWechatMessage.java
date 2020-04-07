@@ -1,10 +1,13 @@
 package com.xiaoazhai.easywechat.entity.message.respmsg;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.http.HttpUtil;
 import com.xiaoazhai.easywechat.entity.message.BaseWechatMessage;
 import com.xiaoazhai.easywechat.exception.WxPubException;
 import com.xiaoazhai.easywechat.util.WxMessageUtil;
 import lombok.Data;
+import org.apache.coyote.http2.ByteUtil;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
@@ -70,8 +73,11 @@ public abstract class ReturnWechatMessage extends BaseWechatMessage {
     }
 
     private String getMediaId(InputStream inputStream) {
+
         return WxMessageUtil.uploadShoreTimeFile(inputStream, getMsgType());
     }
+
+
 
 
 }

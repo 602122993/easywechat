@@ -1,5 +1,6 @@
 package com.xiaoazhai.easywechat.util;
 
+import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.http.HttpUtil;
@@ -15,6 +16,8 @@ import com.xiaoazhai.easywechat.exception.WxPubException;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,13 +36,16 @@ public class WxMessageUtil {
 
 
     public static String uploadShoreTimeFile(InputStream inputStream, MsgTypeEnum typeEnum) {
+//        String fileType = FileTypeUtil.getType(inputStream);
         JSONObject response = JSONUtil.parseObj(HttpUtil.createPost(WxConstants.UPLOAD_SHORE_TIME_SOURCE).form("media", IoUtil.readBytes(inputStream), "file.jpg")
                 .form("access_token", WxPubUtil.getAccessToken().getAccessToken())
                 .form("type", typeEnum.toString())
                 .execute().body());
-        if (StringUtils.isEmpty(response.getStr("errcode"))) {
-            return response.getStr("media_id");
+        if (StringUtils.isEmpty(response.get("errcode"))) {
+            return response.get("media_id").toString();
         }
-        throw new WxPubException(response.getStr("errmsg"));
+        throw new WxPubException(response.get("errmsg").toString());
     }
+
+
 }

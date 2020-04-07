@@ -42,7 +42,7 @@ public class ImageReturnWechatMessage extends ReturnWechatMessage {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    private class Image implements ReturnMessageInterface {
+    public static class Image implements ReturnMessageInterface {
         private String mediaId;
     }
 
