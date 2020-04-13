@@ -75,6 +75,19 @@ public class WxConfig {
      * 微信公众号商户秘钥
      */
     public static String pubMchSecret;
+    /**
+     * 微信公众号token
+     */
+    public static String pubToken;
+
+    /**
+     * 是否加密
+     */
+    public static Boolean aesSecret;
+    /**
+     * 加密key
+     */
+    public static String aesKey;
 
     @PostConstruct
     public void init() {
@@ -99,59 +112,71 @@ public class WxConfig {
 
     }
 
-    public  void setAppId(String appId) {
+    public void setAppId(String appId) {
         WxConfig.appId = appId;
     }
 
-    public  void setAppSecret(String appSecret) {
+    public void setAppSecret(String appSecret) {
         WxConfig.appSecret = appSecret;
     }
 
-    public  void setAppMchId(String appMchId) {
+    public void setAppMchId(String appMchId) {
         WxConfig.appMchId = appMchId;
     }
 
-    public  void setAppMchSecret(String appMchSecret) {
+    public void setAppMchSecret(String appMchSecret) {
         WxConfig.appMchSecret = appMchSecret;
     }
 
-    public  void setMchId(String mchId) {
+    public void setMchId(String mchId) {
         WxConfig.mchId = mchId;
     }
 
-    public  void setMchSecret(String mchSecret) {
+    public void setMchSecret(String mchSecret) {
         WxConfig.mchSecret = mchSecret;
     }
 
-    public  void setWeAppId(String weAppId) {
+    public void setWeAppId(String weAppId) {
         WxConfig.weAppId = weAppId;
     }
 
-    public  void setWeAppSecret(String weAppSecret) {
+    public void setWeAppSecret(String weAppSecret) {
         WxConfig.weAppSecret = weAppSecret;
     }
 
-    public  void setWeAppMchId(String weAppMchId) {
+    public void setWeAppMchId(String weAppMchId) {
         WxConfig.weAppMchId = weAppMchId;
     }
 
-    public  void setWeAppMchSecret(String weAppMchSecret) {
+    public void setWeAppMchSecret(String weAppMchSecret) {
         WxConfig.weAppMchSecret = weAppMchSecret;
     }
 
-    public  void setPubAppId(String pubAppId) {
+    public void setPubAppId(String pubAppId) {
         WxConfig.pubAppId = pubAppId;
     }
 
-    public  void setPubAppSecret(String pubAppSecret) {
+    public void setPubAppSecret(String pubAppSecret) {
         WxConfig.pubAppSecret = pubAppSecret;
     }
 
-    public  void setPubMchId(String pubMchId) {
+    public void setPubMchId(String pubMchId) {
         WxConfig.pubMchId = pubMchId;
     }
 
-    public  void setPubMchSecret(String pubMchSecret) {
+    public void setPubMchSecret(String pubMchSecret) {
         WxConfig.pubMchSecret = pubMchSecret;
+    }
+
+    public static void setPubToken(String pubToken) {
+        WxConfig.pubToken = pubToken;
+    }
+
+    public static void setAesSecret(Boolean aesSecret) {
+        WxConfig.aesSecret = aesSecret;
+    }
+
+    public static void setAesKey(String aesKey) {
+        WxConfig.aesKey = aesKey;
     }
 }
