@@ -100,7 +100,7 @@ public class XmlUtil extends cn.hutool.core.util.XmlUtil {
         dbf.setExpandEntityReferences(false);
 
         DocumentBuilder db = dbf.newDocumentBuilder();
-        StringReader sr = new StringReader(checkInfo.getMsgSignature());
+        StringReader sr = new StringReader(checkInfo.getPostData());
         InputSource is = new InputSource(sr);
         Document document = db.parse(is);
 
@@ -119,21 +119,9 @@ public class XmlUtil extends cn.hutool.core.util.XmlUtil {
         //
 
         // 第三方收到公众号平台发送的消息
-        return pc.decryptMsg(msgSignature, checkInfo.getTimestamp(), checkInfo.getToken(), fromXML);
+        return pc.decryptMsg(msgSignature, checkInfo.getTimestamp(), checkInfo.getNonce(), fromXML);
 
     }
 
-    public static void main(String[] args) throws AesException {
-        String encodingAesKey = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG";
-        String token = "pamtest";
-        String timestamp = "1409304348";
-        String nonce = "1234123";
-        String appId = "wxb11529c136998cb6";
-        String replyMsg = " 中文<xml><ToUserName><![CDATA[oia2TjjewbmiOUlr6X-1crbLOvLw]]></ToUserName><FromUserName><![CDATA[gh_7f083739789a]]></FromUserName><CreateTime>1407743423</CreateTime><MsgType><![CDATA[video]]></MsgType><Video><MediaId><![CDATA[eYJ1MbwPRJtOvIEabaxHs7TX2D-HV71s79GUxqdUkjm6Gs2Ed1KF3ulAOA9H1xG0]]></MediaId><Title><![CDATA[testCallBackReplyVideo]]></Title><Description><![CDATA[testCallBackReplyVideo]]></Description></Video></xml>";
-
-        WXBizMsgCrypt pc = new WXBizMsgCrypt(token, encodingAesKey, appId);
-        String mingwen = pc.encryptMsg(replyMsg, timestamp, nonce);
-        System.out.println("加密后: " + mingwen);
-    }
 }
 

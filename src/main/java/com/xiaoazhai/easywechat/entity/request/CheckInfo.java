@@ -1,6 +1,9 @@
 package com.xiaoazhai.easywechat.entity.request;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author zhai
@@ -8,9 +11,12 @@ import lombok.Data;
  * 校验信息
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CheckInfo {
 
-    public String token;
+    public String postData;
 
     public String timestamp;
 
@@ -18,7 +24,6 @@ public class CheckInfo {
 
 
     public String msgSignature;
-
 
 
 }
