@@ -52,7 +52,7 @@ public class WechatMessageMethodArgumentResolver implements HandlerMethodArgumen
         HttpServletRequest request = nativeWebRequest.getNativeRequest(HttpServletRequest.class);
         HttpServletResponse response = nativeWebRequest.getNativeResponse(HttpServletResponse.class);
         if (request.getMethod() == Method.GET.toString()) {
-            String sign = SecureUtil.sha1(request.getParameter("timestamp") + WxConfig.pubToken + request.getParameter("nonce"));
+            String sign = SecureUtil.sha1( request.getParameter("nonce")+request.getParameter("timestamp") + WxConfig.pubToken );
             log.info("计算签名==================" + sign);
             if (sign.equals(request.getParameter("signature"))) {
                 IoUtil.write(response.getOutputStream(), CharsetUtil.UTF_8, true, request.getParameter("echostr"));
@@ -89,10 +89,5 @@ public class WechatMessageMethodArgumentResolver implements HandlerMethodArgumen
         return WxMessageUtil.castToWechatMessage(body, AllTypeWechatMessage.class);
     }
 
-
-    public static void main(String[] args) {
-
-        System.out.println();
-    }
 
 }

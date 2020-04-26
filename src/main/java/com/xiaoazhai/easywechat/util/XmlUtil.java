@@ -9,6 +9,7 @@ import com.xiaoazhai.easywechat.entity.message.respmsg.TextReturnWechatMessage;
 import com.xiaoazhai.easywechat.entity.request.CheckInfo;
 import com.xiaoazhai.easywechat.exception.AesException;
 import com.xiaoazhai.easywechat.util.aesutil.WXBizMsgCrypt;
+import org.apache.commons.codec.binary.Base64;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -100,16 +101,9 @@ public class XmlUtil extends cn.hutool.core.util.XmlUtil {
         dbf.setExpandEntityReferences(false);
 
         DocumentBuilder db = dbf.newDocumentBuilder();
-        StringReader sr = new StringReader(checkInfo.getPostData());
-        InputSource is = new InputSource(sr);
-        Document document = db.parse(is);
-
-        Element root = document.getDocumentElement();
-        NodeList nodelist1 = root.getElementsByTagName("Encrypt");
-        NodeList nodelist2 = root.getElementsByTagName("MsgSignature");
-
-        String encrypt = nodelist1.item(0).getTextContent();
-        String msgSignature = nodelist2.item(0).getTextContent();
+        Map<String, Object> map = xmlToMap(checkInfo.getPostData());
+        String encrypt = map.get("Encrypt").toString();
+        String msgSignature = checkInfo.getMsgSignature();
 
         String format = "<xml><ToUserName><![CDATA[toUser]]></ToUserName><Encrypt><![CDATA[%1$s]]></Encrypt></xml>";
         String fromXML = String.format(format, encrypt);
@@ -123,5 +117,14 @@ public class XmlUtil extends cn.hutool.core.util.XmlUtil {
 
     }
 
+
+    public static void main(String[] args) {
+        try {
+            new WXBizMsgCrypt("azhai", "RHlCxkFd88jNN7vTh7CnjI19Xea8Je38eZdqLx6aiO3", "asdf");
+        } catch (AesException e) {
+            e.printStackTrace();
+        }
+        Base64.decodeBase64("RHlCxkFd88jNN7vTh7CnjI19Xea8Je38eZdqLx6aiO3=");
+    }
 }
 

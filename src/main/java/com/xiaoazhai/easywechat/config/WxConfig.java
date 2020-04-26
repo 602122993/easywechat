@@ -168,15 +168,15 @@ public class WxConfig {
         WxConfig.pubMchSecret = pubMchSecret;
     }
 
-    public static void setPubToken(String pubToken) {
+    public void setPubToken(String pubToken) {
         WxConfig.pubToken = pubToken;
     }
 
-    public static void setAesSecret(Boolean aesSecret) {
+    public void setAesSecret(Boolean aesSecret) {
         WxConfig.aesSecret = aesSecret;
     }
 
-    public static void setAesKey(String aesKey) {
+    public void setAesKey(String aesKey) {
         WxConfig.aesKey = aesKey;
     }
 }
