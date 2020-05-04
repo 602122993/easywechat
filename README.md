@@ -4,6 +4,9 @@
 该项目旨在缩减微信相关的开发周期,由于微信方提供的api过于繁琐,调用流程过长
 ,坑也过多,而微信方也没有具体的工具依赖,于是有了该项目,让用户可以方便快捷的接入微信公众号以及微信支付的api
 
+[TOC]
+
+
 ## 框架依赖
 
 该工具目前依赖Spring boot 2.0,方便引入配置文件,后期重写配置工具,使该项目不依赖Spring
@@ -43,7 +46,7 @@ public class BaseConfig {
 
 在application.yml配置文件中添加微信相关的配置数据
 ,该配置提供了统一通用的商户号,以及统一的商户秘钥,也可以为APP,小程序以及公众号单独配置商户号和秘钥
-
+<span id="config"></span>
 本项目不仅提供配置文件配置,也支持在请求中传入对应的appid以及秘钥
 ```yaml
 wx:
@@ -106,7 +109,6 @@ AccessTokenResponse response = WxPubUtil.getAccessToken(AccessTokenRequest.build
 ```
 
 获取access_token后,本项目会自动缓存,获取时也会根据appid自动获取缓存
-<span id="jump">跳转到的地方</span>
 ###  用户管理
 
 #### 获取用户基本信息(unionid机制)
@@ -141,7 +143,6 @@ AccessTokenResponse response = WxPubUtil.getAccessToken(AccessTokenRequest.build
 |qrSceneStr|二维码扫码场景描述（开发者自定义）|
 
 代码示例
-[点击跳转](#jump)
 ```
 //根据默认配置的appid 以及openid获取用户信息
 WxUserInfoResponse response = WxPubUtil.getWxPubUserInfoByOpenId("openid");
@@ -156,15 +157,55 @@ WxUserInfoResponse response = WxPubUtil.getWxPubUserInfoByOpenId("openid",Access
 #### 接收普通消息+被动回复用户消息+接受事件推送
 本项目采用基于事件类型的处理模式,根据微信方推送的不同事件,如文字消息,图片消息等等,采用不同的处理Handler,
 首先在微信公众号管理后台**开发** -> **基本配置**中配置接入的url,token以及encodingAESKey,并选择对应的消息加密方式,如果选择了安全模式,
-则需要在配置文件中
+则需要在配置文件中开启aes解密详情请查看[配置相关](#config)
 
-示例1:  接收文字消息  首先创建一个
-```java
+在项目中配置好后,需要根据配置的请求地址创建对应的请求接口,接收参数为AllTypeWechatMessage,并且需要被@Message注解标志,
+在对应的handler处理好以后,如果返回了continue,则会执行一次该方法 
 
-
-
+不建议在本方法中返回数据,每个类型的返回数据都应在对应的handler处理,该方法建议使用通用的一些处理 如保存消息内容
+```
+    @RequestMapping("/wechat")
+    public void wechatLogin(@Message AllTypeWechatMessage wechatMessage) {
+        log.info("统一打印");
+    }
 ```
 
+示例1:  接收文字消息  首先创建一个TextMessageHandler并继承AbstractMessageHandler在泛型中指定需要处理的消息类型
+并且将该类用@MessageHandler注解标记
+```java
+/**
+ * @author zhai
+ * @date 2020年4月4日09:48:34
+ * 微信文字消息处理器
+ */
+@MessageHandler
+public class TextMessageHandler extends AbstractMessageHandler<TextWechatMessage> {
+    @Override
+    public Object onMessage(TextWechatMessage message) {
+        
+        return null;
+    }
+}
+```
+可接收的消息类型详情请查看[附录1](#requestMessage)
+
+在处理完成逻辑想要回复消息时,可以在handler中调用对应的回复方法并且传入必须参数即可
+示例2 回复微信消息
+```java
+/**
+ * @author zhai
+ * @date 2020年4月4日09:48:34
+ * 微信文字消息处理器
+ */
+@MessageHandler
+public class TextMessageHandler extends AbstractMessageHandler<TextWechatMessage> {
+    @Override
+    public Object onMessage(TextWechatMessage message) {
+        return textMessage("我收到了你的消息-------"+message.getContent);
+    }
+}
+```
+回复其他类型的消息详见[附录2](#responseMessage)
 
 
 ### 微信网页开发
@@ -257,3 +298,14 @@ JSSDKResponse response = WxPubUtil.getJsSign(AccessTokenRequest.builder().appid(
 |timeEnd|否|订单失效时间  注意：最短失效时间间隔必须大于5分钟|
 
 
+
+
+<span  id="requestMessage"></span>
+## 附录1  可接受的微信消息类型
+
+### TextWechatMessage 微信消息
+
+<span  id="responseMessage"></span>
+## 附录2  返回微信消息方式
+
+### 返回文字消息
