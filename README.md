@@ -61,6 +61,9 @@ wx:
   pub-app-secret:  #公众号的app秘钥
   pub-mch-id: # 公众号单独的商户号,如果用通用的可以不配置该参数
   pub-mch-secret: #公众号独立的商户秘钥,如果用通用的可以不配置该参数
+  aes-key: #公众号加密秘钥 既微信公众号后台中配置的EncodingAESKey
+  ase-secret: #是否开启加密 true表示开启
+  pub-token: #公众号后台配置token
 ```
 
 ## 微信公众号开发
@@ -103,7 +106,7 @@ AccessTokenResponse response = WxPubUtil.getAccessToken(AccessTokenRequest.build
 ```
 
 获取access_token后,本项目会自动缓存,获取时也会根据appid自动获取缓存
-
+<span id="jump">跳转到的地方</span>
 ###  用户管理
 
 #### 获取用户基本信息(unionid机制)
@@ -138,7 +141,7 @@ AccessTokenResponse response = WxPubUtil.getAccessToken(AccessTokenRequest.build
 |qrSceneStr|二维码扫码场景描述（开发者自定义）|
 
 代码示例
-
+[点击跳转](#jump)
 ```
 //根据默认配置的appid 以及openid获取用户信息
 WxUserInfoResponse response = WxPubUtil.getWxPubUserInfoByOpenId("openid");
@@ -148,6 +151,21 @@ WxUserInfoResponse response = WxPubUtil.getWxPubUserInfoByOpenId("openid","acces
 WxUserInfoResponse response = WxPubUtil.getWxPubUserInfoByOpenId("openid",AccessTokenRequest.builder().appid("appid").secret("secret").build());
 
 ``` 
+### 消息管理
+
+#### 接收普通消息+被动回复用户消息+接受事件推送
+本项目采用基于事件类型的处理模式,根据微信方推送的不同事件,如文字消息,图片消息等等,采用不同的处理Handler,
+首先在微信公众号管理后台**开发** -> **基本配置**中配置接入的url,token以及encodingAESKey,并选择对应的消息加密方式,如果选择了安全模式,
+则需要在配置文件中
+
+示例1:  接收文字消息  首先创建一个
+```java
+
+
+
+```
+
+
 
 ### 微信网页开发
 
