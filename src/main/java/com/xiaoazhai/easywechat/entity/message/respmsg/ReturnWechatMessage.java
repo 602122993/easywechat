@@ -3,9 +3,12 @@ package com.xiaoazhai.easywechat.entity.message.respmsg;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.http.HttpUtil;
+import com.xiaoazhai.easywechat.config.WxConfig;
 import com.xiaoazhai.easywechat.entity.message.BaseWechatMessage;
+import com.xiaoazhai.easywechat.exception.AesException;
 import com.xiaoazhai.easywechat.exception.WxPubException;
 import com.xiaoazhai.easywechat.util.WxMessageUtil;
+import com.xiaoazhai.easywechat.util.XmlUtil;
 import lombok.Data;
 import org.apache.coyote.http2.ByteUtil;
 import org.springframework.util.StringUtils;
@@ -31,6 +34,13 @@ public abstract class ReturnWechatMessage extends BaseWechatMessage {
      * @return
      */
     public abstract String getReturnMessage();
+
+    public String getResult() throws AesException {
+        if (WxConfig.aesSecret) {
+            return XmlUtil.encode(getReturnMessage());
+        }
+        return XmlUtil.encode(getReturnMessage());
+    }
 
     public void initMessage(BaseWechatMessage baseWechatMessage) {
         BaseWechatMessage message = threadLocal.get();
@@ -76,8 +86,6 @@ public abstract class ReturnWechatMessage extends BaseWechatMessage {
 
         return WxMessageUtil.uploadShoreTimeFile(inputStream, getMsgType());
     }
-
-
 
 
 }

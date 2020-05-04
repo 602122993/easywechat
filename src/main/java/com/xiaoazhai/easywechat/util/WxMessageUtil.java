@@ -6,6 +6,7 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.xiaoazhai.easywechat.config.WxConfig;
 import com.xiaoazhai.easywechat.constants.WxConstants;
 import com.xiaoazhai.easywechat.entity.message.BaseWechatMessage;
 import com.xiaoazhai.easywechat.entity.message.respmsg.ReturnWechatMessage;

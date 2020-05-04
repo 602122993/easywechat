@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.xiaoazhai</groupId>
     <artifactId>easy-wechat</artifactId>
-    <version>0.0.4</version>
+    <version>0.0.5</version>
     <name>easy-wechat</name>
     <description>easy use wxpay and wxpub</description>
 

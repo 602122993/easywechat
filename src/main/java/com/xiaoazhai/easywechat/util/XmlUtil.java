@@ -1,6 +1,7 @@
 package com.xiaoazhai.easywechat.util;
 
 import cn.hutool.core.bean.copier.CopyOptions;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ReUtil;
 import com.xiaoazhai.easywechat.config.WxConfig;
 import com.xiaoazhai.easywechat.entity.message.ImageWechatMessage;
@@ -117,6 +118,12 @@ public class XmlUtil extends cn.hutool.core.util.XmlUtil {
 
     }
 
+    public static String encode(String result) throws AesException {
+        WXBizMsgCrypt pc = new WXBizMsgCrypt(WxConfig.pubToken, WxConfig.aesKey, WxConfig.pubAppId);
+        Long timestamp = System.currentTimeMillis() / 1000;
+        String nonceStr = IdUtil.fastSimpleUUID();
+        return pc.encryptMsg(result, timestamp.toString(), nonceStr);
+    }
 
     public static void main(String[] args) {
         try {

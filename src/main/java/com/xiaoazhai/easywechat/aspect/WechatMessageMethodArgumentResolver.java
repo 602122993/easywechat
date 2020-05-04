@@ -51,8 +51,9 @@ public class WechatMessageMethodArgumentResolver implements HandlerMethodArgumen
     public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory) throws Exception {
         HttpServletRequest request = nativeWebRequest.getNativeRequest(HttpServletRequest.class);
         HttpServletResponse response = nativeWebRequest.getNativeResponse(HttpServletResponse.class);
-        if (request.getMethod() == Method.GET.toString()) {
-            String sign = SecureUtil.sha1( request.getParameter("nonce")+request.getParameter("timestamp") + WxConfig.pubToken );
+        log.info(request.getMethod());
+        if (request.getMethod().equals(Method.GET.toString())) {
+            String sign = SecureUtil.sha1(request.getParameter("nonce") + request.getParameter("timestamp") + WxConfig.pubToken);
             log.info("计算签名==================" + sign);
             if (sign.equals(request.getParameter("signature"))) {
                 IoUtil.write(response.getOutputStream(), CharsetUtil.UTF_8, true, request.getParameter("echostr"));
@@ -81,7 +82,7 @@ public class WechatMessageMethodArgumentResolver implements HandlerMethodArgumen
                 }
             }
             if (obj instanceof ReturnWechatMessage) {
-                IoUtil.write(response.getOutputStream(), CharsetUtil.UTF_8, true, ((ReturnWechatMessage) obj).getReturnMessage());
+                IoUtil.write(response.getOutputStream(), CharsetUtil.UTF_8, true, ((ReturnWechatMessage) obj).getResult());
                 return null;
             }
 
