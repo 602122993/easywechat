@@ -39,12 +39,18 @@ import java.util.Map;
 public class WechatMessageMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
 
+    private boolean doContinue = false;
+
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         if (parameter.getParameterType().isAssignableFrom(AllTypeWechatMessage.class) && parameter.hasParameterAnnotation(Message.class)) {
             return true;
         }
         return false;
+    }
+
+    public void doContinue() {
+        this.doContinue = true;
     }
 
     @Override
@@ -83,7 +89,7 @@ public class WechatMessageMethodArgumentResolver implements HandlerMethodArgumen
             }
             if (obj instanceof ReturnWechatMessage) {
                 IoUtil.write(response.getOutputStream(), CharsetUtil.UTF_8, true, ((ReturnWechatMessage) obj).getResult());
-                return null;
+                return WxMessageUtil.castToWechatMessage(body, AllTypeWechatMessage.class);
             }
 
         }

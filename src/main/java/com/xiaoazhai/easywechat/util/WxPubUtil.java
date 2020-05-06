@@ -1,20 +1,16 @@
 package com.xiaoazhai.easywechat.util;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.xiaoazhai.easywechat.config.WxConfig;
 import com.xiaoazhai.easywechat.constants.WxConstants;
-import com.xiaoazhai.easywechat.entity.request.AccessTokenRequest;
-import com.xiaoazhai.easywechat.entity.request.TemplateMessageRequest;
-import com.xiaoazhai.easywechat.entity.request.WxUserInfoRequest;
-import com.xiaoazhai.easywechat.entity.response.AccessTokenResponse;
-import com.xiaoazhai.easywechat.entity.response.ErrorResponse;
-import com.xiaoazhai.easywechat.entity.response.JSSDKResponse;
-import com.xiaoazhai.easywechat.entity.response.WxUserInfoResponse;
+import com.xiaoazhai.easywechat.entity.request.*;
+import com.xiaoazhai.easywechat.entity.response.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -176,4 +172,75 @@ public class WxPubUtil {
         return getJsSign(accessTokenResponse.getAccessToken(), url);
     }
 
+
+    public static boolean createMenu(List<MenuInfo> menuInfoList) {
+        return createMenu(menuInfoList, getAccessToken().getAccessToken());
+    }
+
+    public static boolean createMenu(List<MenuInfo> menuInfoList, String accessToken) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("button", menuInfoList);
+        WxRequestUtil.post(WxConstants.CREATE_MENU + "?access_token=" + accessToken, JSONUtil.toJsonStr(map), ErrorResponse.class);
+        return true;
+    }
+
+    public static boolean createMenu(List<MenuInfo> menuInfoList, AccessTokenRequest request) {
+        AccessTokenResponse accessTokenResponse = getAccessToken(request);
+        return createMenu(menuInfoList, accessTokenResponse.getAccessToken());
+    }
+
+
+    public static boolean createMenu(List<MenuInfo> menuInfoList, MatchRule matchRule) {
+        return createMenu(menuInfoList, getAccessToken().getAccessToken(), matchRule);
+    }
+
+    public static boolean createMenu(List<MenuInfo> menuInfoList, String accessToken, MatchRule matchRule) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("button", menuInfoList);
+        map.put("matchrule", matchRule);
+        WxRequestUtil.post(WxConstants.ADD_MENU_CONDITIONAL + "?access_token=" + accessToken, JSONUtil.toJsonStr(map), ErrorResponse.class);
+        return true;
+    }
+
+    public static boolean createMenu(List<MenuInfo> menuInfoList, AccessTokenRequest request, MatchRule matchRule) {
+        AccessTokenResponse accessTokenResponse = getAccessToken(request);
+        return createMenu(menuInfoList, accessTokenResponse.getAccessToken(), matchRule);
+    }
+
+
+    public static boolean deleteMenu() {
+        return deleteMenu(getAccessToken().getAccessToken());
+    }
+
+    public static boolean deleteMenu(String accessToken) {
+        WxRequestUtil.get(WxConstants.DELETE_MENU + "?access_token=" + accessToken, null, ErrorResponse.class);
+        return true;
+    }
+
+    public static boolean deleteMenu(AccessTokenRequest accessTokenRequest) {
+        return deleteMenu(getAccessToken(accessTokenRequest).getAccessToken());
+    }
+
+    public static List<MenuInfoResponse> getMenu() {
+        return getMenu(getAccessToken().getAccessToken());
+    }
+
+    public static List<MenuInfoResponse> getMenu(String accessToken) {
+        List<MenuInfoResponse> menuInfoResponseList = new ArrayList<>();
+        JSONObject jsonObject = WxRequestUtil.get(WxConstants.GET_MENU + "?access_token=" + accessToken, null);
+        JSONObject menu = jsonObject.getJSONObject("menu");
+        List<JSONObject> conditionalMenuList = jsonObject.getJSONArray("conditionalmenu").toList(JSONObject.class);
+        List<MenuInfo> menuList = menu.getJSONArray("button").toList(MenuInfo.class);
+        MenuInfoResponse menuResponse = new MenuInfoResponse();
+        menuResponse.setMenuList(menuList);
+        conditionalMenuList.forEach(conditionalMenu -> {
+            MenuInfoResponse conditionalMenuResponse = new MenuInfoResponse();
+            conditionalMenuResponse.setMenuList(conditionalMenu.getJSONArray("button").toList(MenuInfo.class));
+        });
+        return menuInfoResponseList;
+    }
+
+    public static List<MenuInfoResponse> getMenu(AccessTokenRequest accessTokenRequest) {
+        return getMenu(getAccessToken(accessTokenRequest).getAccessToken());
+    }
 }

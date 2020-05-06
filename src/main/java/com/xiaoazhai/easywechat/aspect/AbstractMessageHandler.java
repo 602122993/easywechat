@@ -174,7 +174,7 @@ public abstract class AbstractMessageHandler<T extends BaseWechatMessage> {
      * @param description 描述
      * @return
      */
-    public ReturnWechatMessage videoMessageById(String mediaId, String title, String description) {
+    public ReturnWechatMessage videoMessageByMediaId(String mediaId, String title, String description) {
         return VideoReturnWechatMessage.builder().mediaId(mediaId).title(title).description(description).build();
     }
 

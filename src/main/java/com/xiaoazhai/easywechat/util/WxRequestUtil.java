@@ -53,10 +53,21 @@ public class WxRequestUtil {
         return BeanUtil.mapToBean(result, clazz, copyOptions);
     }
 
-    public static <T> T post(String url, Object requestBean, Class<T> resultClass) {
+    public static JSONObject get(String url, Object requestBean) {
         log.info("微信支付请求url-------------" + url);
         log.info("微信支付请求参数-------------" + JSONUtil.toJsonStr(requestBean));
-        JSONObject response = JSONUtil.parseObj(HttpUtil.post(url, JSONUtil.toJsonStr(BeanUtil.beanToMap(requestBean, true, true))));
+        JSONObject response = JSONUtil.parseObj(HttpUtil.get(url, BeanUtil.beanToMap(requestBean, true, true)));
+        return response;
+    }
+
+    public static <T> T post(String url, Object requestBean, Class<T> resultClass) {
+        return post(url, JSONUtil.toJsonStr(BeanUtil.beanToMap(requestBean, true, true)), resultClass);
+    }
+
+    public static <T> T post(String url, String postData, Class<T> resultClass) {
+        log.info("微信支付请求url-------------" + url);
+        log.info("微信支付请求参数-------------" + postData);
+        JSONObject response = JSONUtil.parseObj(HttpUtil.post(url, postData));
         Map<String, Object> result = new HashMap<>();
         response.forEach((key, value) -> result.put(XmlUtil.underlineToHump(key), value));
         CopyOptions copyOptions = new CopyOptions();

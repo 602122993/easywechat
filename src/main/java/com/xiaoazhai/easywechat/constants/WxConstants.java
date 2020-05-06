@@ -54,6 +54,22 @@ public class WxConstants {
      * 上传临时素材
      */
     public static final String UPLOAD_SHORE_TIME_SOURCE = "https://api.weixin.qq.com/cgi-bin/media/upload";
+    /**
+     * 创建菜单
+     */
+    public static final String CREATE_MENU = "https://api.weixin.qq.com/cgi-bin/menu/create";
+    /**
+     * 获取菜单列表
+     */
+    public static final String GET_MENU = "https://api.weixin.qq.com/cgi-bin/menu/get";
+    /**
+     * 删除自定义菜单
+     */
+    public static final String DELETE_MENU = "https://api.weixin.qq.com/cgi-bin/menu/delete";
+    /**
+     * 添加个性化菜单
+     */
+    public static final String ADD_MENU_CONDITIONAL="https://api.weixin.qq.com/cgi-bin/menu/addconditional";
 
 
 }

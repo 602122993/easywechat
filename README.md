@@ -4,8 +4,6 @@
 该项目旨在缩减微信相关的开发周期,由于微信方提供的api过于繁琐,调用流程过长
 ,坑也过多,而微信方也没有具体的工具依赖,于是有了该项目,让用户可以方便快捷的接入微信公众号以及微信支付的api
 
-[TOC]
-
 
 ## 框架依赖
 
@@ -309,3 +307,31 @@ JSSDKResponse response = WxPubUtil.getJsSign(AccessTokenRequest.builder().appid(
 ## 附录2  返回微信消息方式
 
 ### 返回文字消息
+返回文字消息
+```
+//返回文字消息
+textMessage(String message);
+```
+参数说明
+
+
+
+
+### 返回图片消息
+
+返回图片消息需要调用imageMessage()方法,三种类型的参数,图片url,文件流,图片File对象,也可以通过调用imageMessageByMediaId()
+方法通过传入微信方的mediaId来返回消息
+```java
+@MessageHandler
+public class TextMessageHandler extends AbstractMessageHandler<TextWechatMessage> {
+    @Override
+    public Object onMessage(TextWechatMessage message) {
+        return imageMessage("http://image.xiaoazhai.com/");
+    }
+}
+```
+
+### 返回视频消息
+
+返回视频消息调用videoMessage()方法,该方法中第一个参数可接受三种类型,视频url,文件流,视频File对象,
+
