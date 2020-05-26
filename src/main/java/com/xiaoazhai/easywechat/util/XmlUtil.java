@@ -3,8 +3,12 @@ package com.xiaoazhai.easywechat.util;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.json.JSONUtil;
 import com.xiaoazhai.easywechat.config.WxConfig;
 import com.xiaoazhai.easywechat.entity.message.ImageWechatMessage;
+import com.xiaoazhai.easywechat.entity.message.InnerMessageClass;
+import com.xiaoazhai.easywechat.entity.message.ScanCodePushEventWechatMessage;
 import com.xiaoazhai.easywechat.entity.message.respmsg.ImageReturnWechatMessage;
 import com.xiaoazhai.easywechat.entity.message.respmsg.TextReturnWechatMessage;
 import com.xiaoazhai.easywechat.entity.request.CheckInfo;
@@ -22,6 +26,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.StringReader;
+import java.sql.Ref;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,18 +40,20 @@ public class XmlUtil extends cn.hutool.core.util.XmlUtil {
     public static <T> T xmlToBean(String xml, boolean isToHump, Class<T> clazz, boolean ignoreNull) {
         Map<String, Object> map = xmlToMap(xml);
         Map<String, Object> result = new HashMap<>();
-        if (isToHump) {
-            map.forEach((key, value) -> {
+        map.forEach((key, value) -> {
+            if (isToHump) {
                 if ("CreateTime".equals(key)) {
                     value = Long.valueOf(value.toString()) / 1000;
                 }
                 if (key.length() > 0 && Character.isUpperCase(key.charAt(0))) {
-                    result.put(key.replace(key.charAt(0), Character.toLowerCase(key.charAt(0))), value);
+                    key = key.replace(key.charAt(0), Character.toLowerCase(key.charAt(0)));
                 } else {
-                    result.put(underlineToHump(key), value);
+                    key = underlineToHump(key);
                 }
-            });
-        }
+            }
+
+
+        });
         CopyOptions copyOptions = new CopyOptions();
         copyOptions.setIgnoreNullValue(ignoreNull);
         return BeanUtil.mapToBean(result, clazz, copyOptions);
@@ -126,12 +133,18 @@ public class XmlUtil extends cn.hutool.core.util.XmlUtil {
     }
 
     public static void main(String[] args) {
-        try {
-            new WXBizMsgCrypt("azhai", "RHlCxkFd88jNN7vTh7CnjI19Xea8Je38eZdqLx6aiO3", "asdf");
-        } catch (AesException e) {
-            e.printStackTrace();
-        }
-        Base64.decodeBase64("RHlCxkFd88jNN7vTh7CnjI19Xea8Je38eZdqLx6aiO3=");
+        String xml = "<xml><ToUserName><![CDATA[gh_e136c6e50636]]></ToUserName>\n" +
+                "<FromUserName><![CDATA[oMgHVjngRipVsoxg6TuX3vz6glDg]]></FromUserName>\n" +
+                "<CreateTime>1408090651</CreateTime>\n" +
+                "<MsgType><![CDATA[event]]></MsgType>\n" +
+                "<Event><![CDATA[pic_sysphoto]]></Event>\n" +
+                "<EventKey><![CDATA[6]]></EventKey>\n" +
+                "<SendPicsInfo><Count>1</Count>\n" +
+                "<PicList><item><PicMd5Sum><![CDATA[1b5f7c23b5bf75682a53e7b6d163e185]]></PicMd5Sum>\n" +
+                "</item>\n" +
+                "</PicList>\n" +
+                "</SendPicsInfo>\n" +
+                "</xml>";
     }
 }
 

@@ -38,6 +38,8 @@ public class AccessTokenRequest {
     private WxPayRequest request;
 
 
+    private String jsCode;
+
 
 
 }

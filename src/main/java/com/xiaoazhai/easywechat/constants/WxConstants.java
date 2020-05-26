@@ -55,6 +55,10 @@ public class WxConstants {
      */
     public static final String UPLOAD_SHORE_TIME_SOURCE = "https://api.weixin.qq.com/cgi-bin/media/upload";
     /**
+     * 上传图片
+     */
+    public static final String UPLOAD_IMAGE="https://api.weixin.qq.com/cgi-bin/media/uploadimg";
+    /**
      * 创建菜单
      */
     public static final String CREATE_MENU = "https://api.weixin.qq.com/cgi-bin/menu/create";
@@ -71,5 +75,8 @@ public class WxConstants {
      */
     public static final String ADD_MENU_CONDITIONAL="https://api.weixin.qq.com/cgi-bin/menu/addconditional";
 
-
+    /**
+     * 获取微信小程序openid
+     */
+    public static final String  JS_CODE="https://api.weixin.qq.com/sns/jscode2session";
 }

@@ -13,4 +13,8 @@ public class ViewEventWechatMessage extends EventWechatMessage {
      * 事件key,跳转的url
      */
     private String eventKey;
+    /**
+     * 菜单id
+     */
+    private String menuId;
 }

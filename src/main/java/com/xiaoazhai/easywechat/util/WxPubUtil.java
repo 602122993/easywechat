@@ -1,6 +1,7 @@
 package com.xiaoazhai.easywechat.util;
 
 import cn.hutool.core.bean.copier.CopyOptions;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.http.HttpUtil;
@@ -12,6 +13,10 @@ import com.xiaoazhai.easywechat.constants.WxConstants;
 import com.xiaoazhai.easywechat.entity.request.*;
 import com.xiaoazhai.easywechat.entity.response.*;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +59,16 @@ public class WxPubUtil {
         Map map = new HashMap();
         map.put("user_list", list);
         return WxRequestUtil.post(WxConstants.USE_INFO, map, WxUserInfoResponse.class).getUserInfoList();
+    }
+
+    public static String getWeappOpenIdByCode(String code) {
+        AccessTokenRequest request = AccessTokenRequest.builder()
+                .appid(WxConfig.weAppId)
+                .secret(WxConfig.weAppSecret)
+                .jsCode(code)
+                .grantType("authorization_code")
+                .build();
+        return WxRequestUtil.get(WxConstants.JS_CODE, request, AccessTokenResponse.class).getOpenid();
     }
 
     public static List<WxUserInfoResponse> getWxPubUserInfoByOpenId(List<String> openIdList, AccessTokenRequest request) {
@@ -235,12 +250,31 @@ public class WxPubUtil {
         menuResponse.setMenuList(menuList);
         conditionalMenuList.forEach(conditionalMenu -> {
             MenuInfoResponse conditionalMenuResponse = new MenuInfoResponse();
+            conditionalMenuResponse.setMatchRule(conditionalMenu.getBean("matchrule", MatchRule.class));
             conditionalMenuResponse.setMenuList(conditionalMenu.getJSONArray("button").toList(MenuInfo.class));
+            menuInfoResponseList.add(conditionalMenuResponse);
         });
         return menuInfoResponseList;
     }
 
     public static List<MenuInfoResponse> getMenu(AccessTokenRequest accessTokenRequest) {
         return getMenu(getAccessToken(accessTokenRequest).getAccessToken());
+    }
+
+
+    public static String uploadImage(String imageUrl) {
+        return uploadImage(HttpUtil.createGet(imageUrl).execute().bodyStream());
+    }
+
+    public static String uploadImage(File file) throws FileNotFoundException {
+        return uploadImage(new FileInputStream(file));
+    }
+
+    public static String uploadImage(InputStream inputStream) {
+        JSONObject response = JSONUtil.parseObj(HttpUtil.createPost(WxConstants.UPLOAD_IMAGE).form("buffer", IoUtil.readBytes(inputStream),"image.jpg")
+                .form("access_token", WxPubUtil.getAccessToken().getAccessToken())
+                .execute().body());
+        System.out.println(response);
+        return response.getStr("url");
     }
 }

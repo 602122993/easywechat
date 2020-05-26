@@ -7,5 +7,6 @@ public enum EventEnum {
     LOCATION,
     ClICK,
     VIEW,
+    scancode_push,
 
 }
