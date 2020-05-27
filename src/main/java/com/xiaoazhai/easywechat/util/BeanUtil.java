@@ -1,6 +1,8 @@
 package com.xiaoazhai.easywechat.util;
 
+import cn.hutool.json.JSONUtil;
 import com.xiaoazhai.easywechat.entity.message.respmsg.ReturnMessageInterface;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,14 +22,17 @@ public class BeanUtil extends cn.hutool.core.bean.BeanUtil {
             Map<String, Object> resultMap = new HashMap<>();
             map.forEach((key, value) -> {
                 if (value instanceof ReturnMessageInterface) {
-                    resultMap.put(key.replace(key.charAt(0), Character.toUpperCase(key.charAt(0))), beanToMap(value, true, false, true));
+                    resultMap.put(key.replace(key.charAt(0), Character.toUpperCase(key.charAt(0))), beanToMap(value, isToFirstUpperCase, isToUnderLine, true));
                 } else if (value instanceof List) {
                     StringBuilder sb = new StringBuilder();
                     ((List) value).forEach(v -> {
                         if (v instanceof ReturnMessageInterface) {
-                            sb.append(beanToMap(value, true, false, true));
+                            sb.append(beanToMap(value, isToFirstUpperCase, isToUnderLine, true));
                         }
                     });
+                    if (StringUtils.isEmpty(sb)) {
+                        sb.append(JSONUtil.toJsonStr(value));
+                    }
                     resultMap.put(key.replace(key.charAt(0), Character.toUpperCase(key.charAt(0))), sb);
                 } else {
                     resultMap.put(key.replace(key.charAt(0), Character.toUpperCase(key.charAt(0))), value);
