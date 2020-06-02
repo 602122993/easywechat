@@ -1,13 +1,20 @@
 package com.xiaoazhai.easywechat.entity.request;
 
+import com.xiaoazhai.easywechat.entity.message.InnerMessageClass;
+import com.xiaoazhai.easywechat.entity.message.respmsg.NeedRecursionInterface;
+import com.xiaoazhai.easywechat.entity.message.respmsg.ReturnMessageInterface;
+import com.xiaoazhai.easywechat.enums.BusinessService;
 import com.xiaoazhai.easywechat.enums.CardCodeTypeEnum;
 import com.xiaoazhai.easywechat.enums.CardDateInfoTypeEnum;
+import com.xiaoazhai.easywechat.util.BeanUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author zhai
@@ -197,49 +204,46 @@ public class BaseCreateCardRequest {
     /**
      * 封面摘要简介
      */
-    private String abstract1;
+    private String Abstract;
     /**
      * 封面图片列表
      */
     private String iconUrlList;
+
     /**
-     * 图片地址
+     * 图文地址
      */
-    private String imageUrl;
+    private List<TextImage> textImageList;
     /**
-     * 图文描述
+     * 时效 限制
      */
-    private String text;
+    private List<TimeLimit> timeLimit;
     /**
      * 商家服务类型
      */
-    private List businessService;
+    private List<BusinessService> businessService;
     /**
-     * 限制类型枚举
+     * 团购专用,团购详情
      */
-    private String timeLimitType;
+    private String dealDetail;
     /**
-     * 当前type类型下的起始时间(小时)
+     * 折扣力度
      */
-    private Integer beginHour;
+    private Integer discount;
     /**
-     * 当前type类型下的起始时间（分钟
+     * 兑换礼物名称
      */
-    private Integer beginMinute;
+    private String gift;
     /**
-     * 当前type类型下的结束小时
+     * 优惠券专用,优惠券详情
      */
-    private Integer endHour;
-    /**
-     * 当前type类型下的结束分钟
-     */
-    private Integer endMinute;
+    private String defaultDetail;
 
     @Data
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    private static class DateInfo {
+    private static class DateInfo implements NeedRecursionInterface {
         private CardDateInfoTypeEnum type;
 
         private String beginTimestamp;
@@ -251,7 +255,7 @@ public class BaseCreateCardRequest {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    private static class SKU {
+    private static class SKU implements NeedRecursionInterface {
         private Integer quantity;
     }
 
@@ -259,7 +263,7 @@ public class BaseCreateCardRequest {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    private static class BaseInfo {
+    private static class BaseInfo implements NeedRecursionInterface {
         /**
          * 商户logo
          */
@@ -402,16 +406,95 @@ public class BaseCreateCardRequest {
         private Boolean canGiveFriend;
     }
 
-    private static class AdvancedInfo {
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    private static class AdvancedInfo implements NeedRecursionInterface {
+        private UseCondition useCondition;
+
+        private Abstract Abstract;
+
+        private List<TextImage> textImageList;
+
+        private List<TimeLimit> timeLimit;
+
+        private List<BusinessService> businessService;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    private static class UseCondition implements NeedRecursionInterface {
+        private String acceptCateGory;
+        private String rejectCategory;
+        private Boolean canUseWithOtherDiscount;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    private static class Abstract implements NeedRecursionInterface {
+        private String Abstract;
+
+        private List<String> iconUrlList;
+
 
     }
 
-    private static class UseCondition {
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class TextImage  implements NeedRecursionInterface {
+        private String imageUrl;
+
+        private String text;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class TimeLimit implements NeedRecursionInterface {
+        private String type;
+
+        private Integer beginHour;
+
+        private Integer endHour;
+
+        private Integer beginMinute;
+
+        private Integer endMinute;
 
     }
 
-    private static class Abstract {
+    public void execute() {
+        Map<String, Object> card = new HashMap<>();
+        Map<String, Object> groupon = new HashMap<>();
+        BaseInfo baseInfo = BeanUtil.copyIgnoreNullPropertiesGeneric(this, new BaseInfo());
+        DateInfo dateInfo = BeanUtil.copyIgnoreNullPropertiesGeneric(this, new DateInfo());
+        SKU sku = BeanUtil.copyIgnoreNullPropertiesGeneric(this, new SKU());
+        baseInfo.setDateInfo(dateInfo);
+        baseInfo.setSku(sku);
+        AdvancedInfo advancedInfo = new AdvancedInfo();
+        UseCondition useCondition = BeanUtil.copyIgnoreNullPropertiesGeneric(this, new UseCondition());
+        com.xiaoazhai.easywechat.entity.request.BaseCreateCardRequest.Abstract abs = BeanUtil.copyIgnoreNullPropertiesGeneric(this, new Abstract());
+        advancedInfo.setUseCondition(useCondition);
+        advancedInfo.setAbstract(abs);
+        advancedInfo.setTextImageList(this.textImageList);
+        advancedInfo.setTimeLimit(this.timeLimit);
+        advancedInfo.setBusinessService(this.businessService);
+        card=BeanUtil.beanToMapRecursion(baseInfo,true,true);
+        groupon.put("base_info", BeanUtil.beanToMap(baseInfo, true, true));
 
     }
+
+    public static void main(String[] args) {
+       BaseCreateCardRequest.builder().Abstract("asdf").centerUrl("asdf").quantity(50000).brandName("asdf").build().execute();
+    }
+
 
 }

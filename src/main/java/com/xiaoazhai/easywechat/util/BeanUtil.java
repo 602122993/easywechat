@@ -1,7 +1,10 @@
 package com.xiaoazhai.easywechat.util;
 
+import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.json.JSONUtil;
+import com.xiaoazhai.easywechat.entity.message.respmsg.NeedRecursionInterface;
 import com.xiaoazhai.easywechat.entity.message.respmsg.ReturnMessageInterface;
+import com.xiaoazhai.easywechat.entity.request.BaseCreateCardRequest;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
@@ -46,4 +49,37 @@ public class BeanUtil extends cn.hutool.core.bean.BeanUtil {
     }
 
 
+    /**
+     * 忽略空值 泛型
+     *
+     * @param source
+     * @param target
+     */
+    public static <T> T copyIgnoreNullPropertiesGeneric(Object source, T target) {
+        CopyOptions copyOptions = new CopyOptions();
+        copyOptions.setIgnoreNullValue(true);
+        copyProperties(source, target, copyOptions);
+        return target;
+    }
+
+    /**
+     * 递归maptobean
+     *
+     * @param bean
+     * @param isToUnderlineCase
+     * @param ignoreNullValue
+     */
+    public static Map beanToMapRecursion(Object bean, boolean isToUnderlineCase, boolean ignoreNullValue) {
+        Map<String, Object> map = beanToMap(bean, isToUnderlineCase, ignoreNullValue);
+        map.forEach((key, value) -> {
+            if (value instanceof NeedRecursionInterface) {
+                map.put(key, beanToMapRecursion(value, isToUnderlineCase, ignoreNullValue));
+            }
+            if ("Abstract".equals(key)) {
+                map.put("abstract", value);
+                map.remove("Abstract");
+            }
+        });
+        return map;
+    }
 }
