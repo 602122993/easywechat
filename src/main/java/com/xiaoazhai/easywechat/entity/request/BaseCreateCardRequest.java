@@ -1,12 +1,15 @@
 package com.xiaoazhai.easywechat.entity.request;
 
+import cn.hutool.json.JSONUtil;
 import com.xiaoazhai.easywechat.entity.message.InnerMessageClass;
 import com.xiaoazhai.easywechat.entity.message.respmsg.NeedRecursionInterface;
 import com.xiaoazhai.easywechat.entity.message.respmsg.ReturnMessageInterface;
+import com.xiaoazhai.easywechat.entity.response.CreateCardResponse;
 import com.xiaoazhai.easywechat.enums.BusinessService;
 import com.xiaoazhai.easywechat.enums.CardCodeTypeEnum;
 import com.xiaoazhai.easywechat.enums.CardDateInfoTypeEnum;
 import com.xiaoazhai.easywechat.util.BeanUtil;
+import com.xiaoazhai.easywechat.util.WxPubUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -222,10 +225,7 @@ public class BaseCreateCardRequest {
      * 商家服务类型
      */
     private List<BusinessService> businessService;
-    /**
-     * 团购专用,团购详情
-     */
-    private String dealDetail;
+
     /**
      * 折扣力度
      */
@@ -249,6 +249,14 @@ public class BaseCreateCardRequest {
         private String beginTimestamp;
 
         private String endTimestamp;
+        /**
+         * 表示领取多少天内有效
+         */
+        private Integer fixedTerm;
+        /**
+         * 表示领取后多少天开始生效
+         */
+        private Integer fixedBeginTerm;
     }
 
     @Data
@@ -294,14 +302,7 @@ public class BaseCreateCardRequest {
         private String description;
         private SKU sku;
         private DateInfo dateInfo;
-        /**
-         * 表示领取多少天内有效
-         */
-        private Integer fixedTerm;
-        /**
-         * 表示领取后多少天开始生效
-         */
-        private Integer fixedBeginTerm;
+
         /**
          * 是否自定义Code码
          */
@@ -448,7 +449,7 @@ public class BaseCreateCardRequest {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class TextImage  implements NeedRecursionInterface {
+    public static class TextImage implements NeedRecursionInterface {
         private String imageUrl;
 
         private String text;
@@ -471,8 +472,8 @@ public class BaseCreateCardRequest {
 
     }
 
-    public void execute() {
-        Map<String, Object> card = new HashMap<>();
+    private String detail;
+    public Map<String, Object> getBaseMap() {
         Map<String, Object> groupon = new HashMap<>();
         BaseInfo baseInfo = BeanUtil.copyIgnoreNullPropertiesGeneric(this, new BaseInfo());
         DateInfo dateInfo = BeanUtil.copyIgnoreNullPropertiesGeneric(this, new DateInfo());
@@ -487,13 +488,26 @@ public class BaseCreateCardRequest {
         advancedInfo.setTextImageList(this.textImageList);
         advancedInfo.setTimeLimit(this.timeLimit);
         advancedInfo.setBusinessService(this.businessService);
-        card=BeanUtil.beanToMapRecursion(baseInfo,true,true);
-        groupon.put("base_info", BeanUtil.beanToMap(baseInfo, true, true));
-
+        groupon.put("base_info", BeanUtil.beanToMapRecursion(baseInfo, true, true));
+        groupon.put("advanced_info", BeanUtil.beanToMapRecursion(advancedInfo, true, true));
+        return groupon;
     }
 
-    public static void main(String[] args) {
-       BaseCreateCardRequest.builder().Abstract("asdf").centerUrl("asdf").quantity(50000).brandName("asdf").build().execute();
+
+    private Map generalMap() {
+        Map<String, Object> card = new HashMap<>();
+        Map<String, Object> param = new HashMap<>();
+        Map<String, Object> groupon = getBaseMap();
+        groupon.put("deal_detail", detail);
+        card.put("card_type", "GROUPON");
+        card.put("groupon", groupon);
+        param.put("card", card);
+        return param;
+    }
+
+    public CreateCardResponse execute() {
+        System.out.println(JSONUtil.toJsonStr(generalMap()));
+        return WxPubUtil.createCard(generalMap());
     }
 
 

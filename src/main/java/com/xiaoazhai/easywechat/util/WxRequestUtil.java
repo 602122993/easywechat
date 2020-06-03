@@ -63,7 +63,9 @@ public class WxRequestUtil {
     public static <T> T post(String url, Object requestBean, Class<T> resultClass) {
         return post(url, JSONUtil.toJsonStr(BeanUtil.beanToMap(requestBean, true, true)), resultClass);
     }
-
+    public static <T> T post(String url, Map requestBean, Class<T> resultClass) {
+        return post(url, JSONUtil.toJsonStr(requestBean), resultClass);
+    }
     public static <T> T post(String url, String postData, Class<T> resultClass) {
         log.info("微信支付请求url-------------" + url);
         log.info("微信支付请求参数-------------" + postData);

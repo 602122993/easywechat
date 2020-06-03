@@ -57,7 +57,7 @@ public class WxConstants {
     /**
      * 上传图片
      */
-    public static final String UPLOAD_IMAGE="https://api.weixin.qq.com/cgi-bin/media/uploadimg";
+    public static final String UPLOAD_IMAGE = "https://api.weixin.qq.com/cgi-bin/media/uploadimg";
     /**
      * 创建菜单
      */
@@ -73,10 +73,15 @@ public class WxConstants {
     /**
      * 添加个性化菜单
      */
-    public static final String ADD_MENU_CONDITIONAL="https://api.weixin.qq.com/cgi-bin/menu/addconditional";
+    public static final String ADD_MENU_CONDITIONAL = "https://api.weixin.qq.com/cgi-bin/menu/addconditional";
 
     /**
      * 获取微信小程序openid
      */
-    public static final String  JS_CODE="https://api.weixin.qq.com/sns/jscode2session";
+    public static final String JS_CODE = "https://api.weixin.qq.com/sns/jscode2session";
+
+    /**
+     * 获取微信卡券
+     */
+    public static final String CREATE_CARD = "https://api.weixin.qq.com/card/create";
 }

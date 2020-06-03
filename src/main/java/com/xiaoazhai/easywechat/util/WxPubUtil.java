@@ -271,10 +271,22 @@ public class WxPubUtil {
     }
 
     public static String uploadImage(InputStream inputStream) {
-        JSONObject response = JSONUtil.parseObj(HttpUtil.createPost(WxConstants.UPLOAD_IMAGE).form("buffer", IoUtil.readBytes(inputStream),"image.jpg")
+        JSONObject response = JSONUtil.parseObj(HttpUtil.createPost(WxConstants.UPLOAD_IMAGE).form("buffer", IoUtil.readBytes(inputStream), "image.jpg")
                 .form("access_token", WxPubUtil.getAccessToken().getAccessToken())
                 .execute().body());
         System.out.println(response);
         return response.getStr("url");
+    }
+
+    public static CreateCardResponse createCard(Map<String, Object> param) {
+        return createCard(param, getAccessToken().getAccessToken());
+    }
+
+    public static CreateCardResponse createCard(Map<String, Object> param, String accessToken) {
+        return WxRequestUtil.post(WxConstants.CREATE_CARD + "?access_token=" + accessToken, param, CreateCardResponse.class);
+    }
+
+    public static CreateCardResponse createCard(Map<String, Object> param, AccessTokenRequest request) {
+        return createCard(param, getAccessToken(request).getAccessToken());
     }
 }
