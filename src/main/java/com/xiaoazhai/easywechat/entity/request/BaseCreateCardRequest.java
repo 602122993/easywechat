@@ -106,18 +106,7 @@ public class BaseCreateCardRequest {
      * 设置本卡券支持全部门店
      */
     private Boolean useAllLocations;
-    /**
-     * 中心标题
-     */
-    private String centerTitle;
-    /**
-     * 显示在入口下方的提示语
-     */
-    private String centerSubTitle;
-    /**
-     * 顶部居中的url
-     */
-    private String centerUrl;
+
 
     /**
      * 卡券跳转的小程序的user_name，仅可跳转该 公众号绑定的小程序 。
@@ -128,18 +117,7 @@ public class BaseCreateCardRequest {
      */
     private String centerAppBrandPass;
 
-    /**
-     * 显示在入口右侧的提示语
-     */
-    private String customUrlSubTitle;
-    /**
-     * 自定义跳转外链入口名字
-     */
-    private String customUrlName;
-    /**
-     * 自定义跳转外链的url
-     */
-    private String customUrl;
+
     /**
      * 卡券跳转的小程序的user_name
      */
@@ -148,18 +126,7 @@ public class BaseCreateCardRequest {
      * 卡券跳转的小程序的path
      */
     private String customAppBrandPass;
-    /**
-     * 营销场景的自定义入口名称
-     */
-    private String promotionUrlName;
-    /**
-     * 入口跳转外链的地址链接。
-     */
-    private String promotionUrl;
-    /**
-     * 显示在营销入口右侧
-     */
-    private String promotionUrlSubTitle;
+
     /**
      * 跳转的小程序名称(已经第三了 我人都傻了
      */
@@ -211,7 +178,7 @@ public class BaseCreateCardRequest {
     /**
      * 封面图片列表
      */
-    private String iconUrlList;
+    private List<String> iconUrlList;
 
     /**
      * 图文地址
@@ -327,18 +294,7 @@ public class BaseCreateCardRequest {
          * 设置本卡券支持全部门店
          */
         private Boolean useAllLocations;
-        /**
-         * 中心标题
-         */
-        private String centerTitle;
-        /**
-         * 显示在入口下方的提示语
-         */
-        private String centerSubTitle;
-        /**
-         * 顶部居中的url
-         */
-        private String centerUrl;
+
 
         /**
          * 卡券跳转的小程序的user_name，仅可跳转该 公众号绑定的小程序 。
@@ -349,18 +305,7 @@ public class BaseCreateCardRequest {
          */
         private String centerAppBrandPass;
 
-        /**
-         * 显示在入口右侧的提示语
-         */
-        private String customUrlSubTitle;
-        /**
-         * 自定义跳转外链入口名字
-         */
-        private String customUrlName;
-        /**
-         * 自定义跳转外链的url
-         */
-        private String customUrl;
+
         /**
          * 卡券跳转的小程序的user_name
          */
@@ -369,18 +314,7 @@ public class BaseCreateCardRequest {
          * 卡券跳转的小程序的path
          */
         private String customAppBrandPass;
-        /**
-         * 营销场景的自定义入口名称
-         */
-        private String promotionUrlName;
-        /**
-         * 入口跳转外链的地址链接。
-         */
-        private String promotionUrl;
-        /**
-         * 显示在营销入口右侧
-         */
-        private String promotionUrlSubTitle;
+
         /**
          * 跳转的小程序名称(已经第三了 我人都傻了
          */

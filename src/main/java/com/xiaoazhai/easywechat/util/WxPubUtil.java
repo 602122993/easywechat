@@ -5,7 +5,6 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.http.HttpUtil;
-import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.xiaoazhai.easywechat.config.WxConfig;
@@ -288,5 +287,57 @@ public class WxPubUtil {
 
     public static CreateCardResponse createCard(Map<String, Object> param, AccessTokenRequest request) {
         return createCard(param, getAccessToken(request).getAccessToken());
+    }
+
+    public static ErrorResponse importCode(String cardId, List<String> codeList, String accessToken) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("card_id", cardId);
+        param.put("code", codeList);
+        return WxRequestUtil.post(WxConstants.IMPORT_CODE + "?access_token=" + accessToken, param, ErrorResponse.class);
+    }
+
+    public static ErrorResponse importCode(String cardId, List<String> codeList) {
+        return importCode(cardId, codeList, getAccessToken().getAccessToken());
+    }
+
+    public static ErrorResponse importCode(String cardId, List<String> codeList, AccessTokenRequest request) {
+        return importCode(cardId, codeList, getAccessToken(request).getAccessToken());
+    }
+
+    public static ErrorResponse getCodeCountByCardId(String cardId, String accessToken) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("card_id", cardId);
+        return WxRequestUtil.post(WxConstants.GET_CODE_COUNT_BY_CARD_ID, param, ErrorResponse.class);
+    }
+
+    public static ErrorResponse getCodeCountByCardId(String cardId, AccessTokenRequest request) {
+        return getCodeCountByCardId(cardId, getAccessToken(request).getAccessToken());
+    }
+
+    public static ErrorResponse getCodeCountByCardId(String cardId) {
+        return getCodeCountByCardId(cardId, getAccessToken().getAccessToken());
+    }
+
+    public static ErrorResponse checkCode(String cardId, List<String> codeList, String accessToken) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("card_id", cardId);
+        param.put("code", codeList);
+        return WxRequestUtil.post(WxConstants.CHECK_CODE + "?access_token=" + accessToken, param, ErrorResponse.class);
+    }
+
+    public static ErrorResponse checkCode(String cardId, List<String> codeList) {
+        return checkCode(cardId, codeList, getAccessToken().getAccessToken());
+    }
+
+    public static ErrorResponse checkCode(String cardId, List<String> codeList, AccessTokenRequest request) {
+        return checkCode(cardId, codeList, getAccessToken(request).getAccessToken());
+    }
+
+    public static SendMessageResponse sendMessageByOpenId(Map param, String accessToken) {
+        return WxRequestUtil.post(WxConstants.SEND_MESSAGE + "?access_token=" + accessToken, param, SendMessageResponse.class);
+    }
+
+    public static SendMessageResponse sendMessageByOpenId(Map param) {
+        return sendMessageByOpenId(param, getAccessToken().getAccessToken());
     }
 }

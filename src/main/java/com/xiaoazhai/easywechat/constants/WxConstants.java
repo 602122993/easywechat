@@ -84,4 +84,21 @@ public class WxConstants {
      * 获取微信卡券
      */
     public static final String CREATE_CARD = "https://api.weixin.qq.com/card/create";
+    /**
+     * 导入微信卡券code
+     */
+    public static final String IMPORT_CODE = "http://api.weixin.qq.com/card/code/deposit";
+    /**
+     * 根据卡券id获取code数量
+     */
+    public static final String GET_CODE_COUNT_BY_CARD_ID = "http://api.weixin.qq.com/card/code/getdepositcount";
+    /**
+     * 校验卡券导入情况
+     */
+    public static final String CHECK_CODE = "http://api.weixin.qq.com/card/code/checkcode";
+
+    /**
+     * 根据openid发送
+     */
+    public static final String SEND_MESSAGE = "https://api.weixin.qq.com/cgi-bin/message/mass/send";
 }

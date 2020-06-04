@@ -20,6 +20,7 @@ public enum MsgTypeEnum {
     location(LocationWechatMessage.class),
     link(LinkWechatMessage.class),
     music(null),
+    wxcard(null),
     event(EventWechatMessage.class);
 
     private Class<? extends BaseWechatMessage> clazz;
