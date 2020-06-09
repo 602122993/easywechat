@@ -27,7 +27,7 @@ public class Test {
     @org.junit.Test
     public void test() {
         List<String> openid = new ArrayList<>();
-        openid.add("oQWV3wBOsktFAKMEnbf0XNMzwFSs");
+        openid.add("oQWV3wH0UEXKYLseskIyUmkXe2Yc");
         openid.add("oQWV3wBOsktFAKMEnbf0XNMzwFSs");
         SendMessageResponse res = SendMessageByOpenIdRequest.builder().cardId("pQWV3wGzHVpGIdLRIH_Tr84h8QCU").touser(openid)
                 .msgtype(SendMsgTypeEnum.wxcard).build().execute();

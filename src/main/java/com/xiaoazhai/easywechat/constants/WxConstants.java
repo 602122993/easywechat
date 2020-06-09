@@ -101,4 +101,8 @@ public class WxConstants {
      * 根据openid发送
      */
     public static final String SEND_MESSAGE = "https://api.weixin.qq.com/cgi-bin/message/mass/send";
+    /**
+     * 创建卡券二维码
+     */
+    public static final String CREATE_CARD_QRCODE = "https://api.weixin.qq.com/card/qrcode/create";
 }
