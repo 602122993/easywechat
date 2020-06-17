@@ -1,7 +1,7 @@
 package com.xiaoazhai.easywechat.entity.request;
 
 import cn.hutool.core.util.StrUtil;
-import com.xiaoazhai.easywechat.entity.response.ErrorResponse;
+import com.xiaoazhai.easywechat.entity.response.BaseResponse;
 import com.xiaoazhai.easywechat.util.WxPubUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -56,14 +56,14 @@ public class TemplateMessageRequest {
 
     }
 
-    public ErrorResponse execute() {
+    public BaseResponse execute() {
         if (StrUtil.isNotEmpty(accessToken)) {
             return WxPubUtil.sendTemplateMessage(this, accessToken);
         }
         return WxPubUtil.sendTemplateMessage(this);
     }
 
-    public ErrorResponse execute(AccessTokenRequest request) {
+    public BaseResponse execute(AccessTokenRequest request) {
         return WxPubUtil.sendTemplateMessage(this, request);
     }
 }

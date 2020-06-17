@@ -1,5 +1,7 @@
 package com.xiaoazhai.easywechat.entity.request;
 
+import com.xiaoazhai.easywechat.entity.response.CreateCardQrCodeResponse;
+import com.xiaoazhai.easywechat.util.WxPubUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -40,5 +42,19 @@ public class CreateCardQRCodeRequest {
         private Boolean isUniqueCode;
 
         private String outerStr;
+    }
+
+
+    public CreateCardQrCodeResponse execute() {
+        return execute(WxPubUtil.getAccessToken().getAccessToken());
+    }
+
+
+    public CreateCardQrCodeResponse execute(AccessTokenRequest request) {
+        return execute(WxPubUtil.getAccessToken(request).getAccessToken());
+    }
+
+    public CreateCardQrCodeResponse execute(String accessToken) {
+        return WxPubUtil.createCardQrCode(accessToken, this);
     }
 }

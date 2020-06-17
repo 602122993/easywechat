@@ -7,6 +7,7 @@ import com.xiaoazhai.easywechat.entity.message.respmsg.ReturnMessageInterface;
 import com.xiaoazhai.easywechat.entity.request.BaseCreateCardRequest;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,31 +22,38 @@ public class BeanUtil extends cn.hutool.core.bean.BeanUtil {
 
     public static Map<String, Object> beanToMap(Object bean, boolean isToFirstUpperCase, boolean isToUnderLine, boolean ignoreNullValue) {
         Map<String, Object> map = beanToMap(bean, isToUnderLine, ignoreNullValue);
-        if (isToFirstUpperCase) {
-            Map<String, Object> resultMap = new HashMap<>();
-            map.forEach((key, value) -> {
-                if (value instanceof ReturnMessageInterface) {
+        Map<String, Object> resultMap = new HashMap<>();
+        map.forEach((key, value) -> {
+            if (value instanceof ReturnMessageInterface) {
+                if (isToFirstUpperCase) {
                     resultMap.put(key.replace(key.charAt(0), Character.toUpperCase(key.charAt(0))), beanToMap(value, isToFirstUpperCase, isToUnderLine, true));
-                } else if (value instanceof List) {
-                    StringBuilder sb = new StringBuilder();
-                    ((List) value).forEach(v -> {
-                        if (v instanceof ReturnMessageInterface) {
-                            sb.append(beanToMap(value, isToFirstUpperCase, isToUnderLine, true));
-                        }
-                    });
-                    if (StringUtils.isEmpty(sb)) {
-                        sb.append(JSONUtil.toJsonStr(value));
-                    }
-                    resultMap.put(key.replace(key.charAt(0), Character.toUpperCase(key.charAt(0))), sb);
                 } else {
-                    resultMap.put(key.replace(key.charAt(0), Character.toUpperCase(key.charAt(0))), value);
+                    resultMap.put(key, beanToMap(value, isToFirstUpperCase, isToUnderLine, true));
                 }
+            } else if (value instanceof List) {
+                List list = new ArrayList();
+                ((List) value).forEach(v -> {
+                    if (v instanceof ReturnMessageInterface) {
+                        list.add(beanToMap(v, isToFirstUpperCase, isToUnderLine, true));
+                    }
+                });
+
+                if (isToFirstUpperCase) {
+                    resultMap.put(key.replace(key.charAt(0), Character.toUpperCase(key.charAt(0))), list);
+                } else {
+                    resultMap.put(key, list);
+                }
+            } else {
+                if (isToFirstUpperCase) {
+                    resultMap.put(key.replace(key.charAt(0), Character.toUpperCase(key.charAt(0))), value);
+                } else {
+                    resultMap.put(key, value);
+                }
+            }
 
 
-            });
-            return resultMap;
-        }
-        return map;
+        });
+        return resultMap;
     }
 
 

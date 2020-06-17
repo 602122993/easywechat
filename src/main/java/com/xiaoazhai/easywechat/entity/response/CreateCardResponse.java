@@ -8,7 +8,7 @@ import lombok.Data;
  * 创建卡卷返回结果
  */
 @Data
-public class CreateCardResponse extends ErrorResponse {
+public class CreateCardResponse extends BaseResponse {
 
     private String cardId;
 

@@ -10,7 +10,7 @@ import lombok.Data;
  * </p>
  */
 @Data
-public class WxPayResponse  extends ErrorResponse {
+public class WxPayResponse  extends BaseResponse {
     /**
      * 微信appid
      */

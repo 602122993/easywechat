@@ -10,11 +10,12 @@
     </parent>
     <groupId>com.xiaoazhai</groupId>
     <artifactId>easy-wechat</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.10</version>
     <name>easy-wechat</name>
     <description>easy use wxpay and wxpub</description>
 
     <properties>
+        <skipTests>true</skipTests>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -117,6 +118,7 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <version>2.10.4</version>
+
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
@@ -166,6 +168,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -197,6 +200,7 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

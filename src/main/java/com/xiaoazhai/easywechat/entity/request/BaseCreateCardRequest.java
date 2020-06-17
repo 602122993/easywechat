@@ -8,6 +8,7 @@ import com.xiaoazhai.easywechat.entity.response.CreateCardResponse;
 import com.xiaoazhai.easywechat.enums.BusinessService;
 import com.xiaoazhai.easywechat.enums.CardCodeTypeEnum;
 import com.xiaoazhai.easywechat.enums.CardDateInfoTypeEnum;
+import com.xiaoazhai.easywechat.enums.CardTypeEnum;
 import com.xiaoazhai.easywechat.util.BeanUtil;
 import com.xiaoazhai.easywechat.util.WxPubUtil;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +31,9 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BaseCreateCardRequest {
+
+
+    private CardTypeEnum cardType;
 
     /**
      * 商户logo
@@ -162,7 +167,11 @@ public class BaseCreateCardRequest {
     /**
      * 满减门槛字段
      */
-    private String leastCost;
+    private Integer leastCost;
+    /**
+     * 减免金额
+     */
+    private Integer reduceCost;
     /**
      * 购买xx可用类型门槛，仅用于兑换 ，填入后自动拼写购买xxx可用
      */
@@ -407,6 +416,7 @@ public class BaseCreateCardRequest {
     }
 
     private String detail;
+
     public Map<String, Object> getBaseMap() {
         Map<String, Object> groupon = new HashMap<>();
         BaseInfo baseInfo = BeanUtil.copyIgnoreNullPropertiesGeneric(this, new BaseInfo());
@@ -417,6 +427,13 @@ public class BaseCreateCardRequest {
         AdvancedInfo advancedInfo = new AdvancedInfo();
         UseCondition useCondition = BeanUtil.copyIgnoreNullPropertiesGeneric(this, new UseCondition());
         com.xiaoazhai.easywechat.entity.request.BaseCreateCardRequest.Abstract abs = BeanUtil.copyIgnoreNullPropertiesGeneric(this, new Abstract());
+        if (abs.getIconUrlList() != null && abs.getIconUrlList().size() > 0) {
+            List<String> urlList = new ArrayList<>();
+            abs.getIconUrlList().forEach(url -> {
+                urlList.add(WxPubUtil.uploadImage(url));
+            });
+            abs.setIconUrlList(urlList);
+        }
         advancedInfo.setUseCondition(useCondition);
         advancedInfo.setAbstract(abs);
         advancedInfo.setTextImageList(this.textImageList);
@@ -432,16 +449,44 @@ public class BaseCreateCardRequest {
         Map<String, Object> card = new HashMap<>();
         Map<String, Object> param = new HashMap<>();
         Map<String, Object> groupon = getBaseMap();
-        groupon.put("deal_detail", detail);
-        card.put("card_type", "GROUPON");
-        card.put("groupon", groupon);
+        card.put("card_type", cardType);
+        switch (cardType) {
+            case GROUPON:
+                groupon.put("deal_detail", detail);
+                card.put("groupon", groupon);
+                break;
+            case CASH:
+                groupon.put("reduce_cost", reduceCost);
+                groupon.put("least_cost", leastCost);
+                card.put("cash", groupon);
+                break;
+            case DISCOUNT:
+                groupon.put("discount", discount);
+                card.put("discount", groupon);
+                break;
+            case GIFT:
+                groupon.put("gift", gift);
+                card.put("gift", groupon);
+                break;
+            case GENERAL_COUPON:
+                groupon.put("default_detail", defaultDetail);
+                card.put("general_coupon", groupon);
+                break;
+        }
         param.put("card", card);
         return param;
     }
 
     public CreateCardResponse execute() {
-        System.out.println(JSONUtil.toJsonStr(generalMap()));
         return WxPubUtil.createCard(generalMap());
+    }
+
+    public CreateCardResponse execute(String accessToken) {
+        return WxPubUtil.createCard(generalMap(), accessToken);
+    }
+
+    public CreateCardResponse execute(AccessTokenRequest accessToken) {
+        return WxPubUtil.createCard(generalMap(), accessToken);
     }
 
 

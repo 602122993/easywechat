@@ -8,7 +8,7 @@ import lombok.Data;
  * 微信付款到零钱返回结果
  */
 @Data
-public class WxPayToWalletResponse extends ErrorResponse {
+public class WxPayToWalletResponse extends BaseResponse {
 
     /**
      * 商户账号appid

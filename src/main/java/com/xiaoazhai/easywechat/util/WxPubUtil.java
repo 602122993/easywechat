@@ -7,10 +7,14 @@ import cn.hutool.crypto.SecureUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.xiaoazhai.easywechat.cache.CacheInterface;
 import com.xiaoazhai.easywechat.config.WxConfig;
 import com.xiaoazhai.easywechat.constants.WxConstants;
 import com.xiaoazhai.easywechat.entity.request.*;
 import com.xiaoazhai.easywechat.entity.response.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author zhai
@@ -29,10 +32,18 @@ import java.util.concurrent.ConcurrentHashMap;
  * 微信公众号开发工具
  * </p>
  */
+
+@Component
 public class WxPubUtil {
 
 
-    private static final Map<String, AccessTokenResponse> ACCESS_TOKEN_MAP = new ConcurrentHashMap<>();
+    @Autowired
+    @Qualifier("easyWxCache")
+    public void setEasyWxCache(CacheInterface easyWxCache) {
+        WxPubUtil.easyWxCache = easyWxCache;
+    }
+
+    private static CacheInterface easyWxCache;
 
 
     public static WxUserInfoResponse getWxPubUserInfoByOpenId(String openId) {
@@ -81,18 +92,18 @@ public class WxPubUtil {
      * @param accessToken
      * @return
      */
-    public static ErrorResponse sendTemplateMessage(TemplateMessageRequest request, String accessToken) {
+    public static BaseResponse sendTemplateMessage(TemplateMessageRequest request, String accessToken) {
         request.setAccessToken(accessToken);
         String url = WxConstants.SEND_TEMPLATE_MESSAGE + "?access_token=" + request.getAccessToken();
         request.setAccessToken(null);
-        return WxRequestUtil.post(url, request, ErrorResponse.class);
+        return WxRequestUtil.post(url, request, BaseResponse.class);
     }
 
-    public static ErrorResponse sendTemplateMessage(TemplateMessageRequest request) {
+    public static BaseResponse sendTemplateMessage(TemplateMessageRequest request) {
         return sendTemplateMessage(request, getAccessToken().getAccessToken());
     }
 
-    public static ErrorResponse sendTemplateMessage(TemplateMessageRequest request, AccessTokenRequest accessTokenRequest) {
+    public static BaseResponse sendTemplateMessage(TemplateMessageRequest request, AccessTokenRequest accessTokenRequest) {
         return sendTemplateMessage(request, getAccessToken(accessTokenRequest).getAccessToken());
     }
 
@@ -145,18 +156,40 @@ public class WxPubUtil {
      * @return
      */
     public static AccessTokenResponse getAccessToken(AccessTokenRequest request) {
-        if (ACCESS_TOKEN_MAP.get(request.getAppid()) == null || ACCESS_TOKEN_MAP.get(request.getAppid()).getTimeStamp() < System.currentTimeMillis()) {
+        if (easyWxCache.get(WxConstants.ACCESS_TOKEN_CACHE, request.getAppid(), AccessTokenResponse.class) == null) {
             request.setGrantType("client_credential");
             AccessTokenResponse response = WxRequestUtil.get(WxConstants.ACCESS_TOKEN, request, AccessTokenResponse.class);
-            response.setTimeStamp(System.currentTimeMillis() + (1000 * Integer.valueOf(response.getExpiresIn()) - 200));
-            ACCESS_TOKEN_MAP.put(request.getAppid(), response);
+            easyWxCache.set(WxConstants.ACCESS_TOKEN_CACHE, request.getAppid(), response, Integer.valueOf(response.getExpiresIn()) - 100);
         }
-        return ACCESS_TOKEN_MAP.get(request.getAppid());
+        return easyWxCache.get(WxConstants.ACCESS_TOKEN_CACHE, request.getAppid(), AccessTokenResponse.class);
+    }
+
+
+    public static String getWxCardTicket(String accessToken, String appid) {
+        String ticket = easyWxCache.get(WxConstants.WX_CARD_TICKET, appid, String.class);
+        if (ticket == null) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("access_token", accessToken);
+            map.put("type", "wx_card");
+            String response = HttpUtil.get(WxConstants.JS_TICKET, map);
+            ticket = JSONUtil.parseObj(response).getStr("ticket");
+            easyWxCache.set(WxConstants.WX_CARD_TICKET, appid, ticket, 7000);
+        }
+        return ticket;
+    }
+
+    public static String getWxCardTicket() {
+        return getWxCardTicket(AccessTokenRequest.builder().appid(WxConfig.pubAppId).secret(WxConfig.pubAppSecret).build());
+    }
+
+    public static String getWxCardTicket(AccessTokenRequest request) {
+        return getWxCardTicket(getAccessToken(request).getAccessToken(), request.getAppid());
     }
 
     public static JSSDKResponse getJsSign(String url) {
         return getJsSign(AccessTokenRequest.builder().appid(WxConfig.pubAppId).secret(WxConfig.pubAppSecret).build(), url);
     }
+
 
     public static JSSDKResponse getJsSign(String accessToken, String url) {
         url = URLUtil.decode(url);
@@ -194,7 +227,7 @@ public class WxPubUtil {
     public static boolean createMenu(List<MenuInfo> menuInfoList, String accessToken) {
         Map<String, Object> map = new HashMap<>();
         map.put("button", menuInfoList);
-        WxRequestUtil.post(WxConstants.CREATE_MENU + "?access_token=" + accessToken, JSONUtil.toJsonStr(map), ErrorResponse.class);
+        WxRequestUtil.post(WxConstants.CREATE_MENU + "?access_token=" + accessToken, JSONUtil.toJsonStr(map), BaseResponse.class);
         return true;
     }
 
@@ -212,7 +245,7 @@ public class WxPubUtil {
         Map<String, Object> map = new HashMap<>();
         map.put("button", menuInfoList);
         map.put("matchrule", matchRule);
-        WxRequestUtil.post(WxConstants.ADD_MENU_CONDITIONAL + "?access_token=" + accessToken, JSONUtil.toJsonStr(map), ErrorResponse.class);
+        WxRequestUtil.post(WxConstants.ADD_MENU_CONDITIONAL + "?access_token=" + accessToken, JSONUtil.toJsonStr(map), BaseResponse.class);
         return true;
     }
 
@@ -227,7 +260,7 @@ public class WxPubUtil {
     }
 
     public static boolean deleteMenu(String accessToken) {
-        WxRequestUtil.get(WxConstants.DELETE_MENU + "?access_token=" + accessToken, null, ErrorResponse.class);
+        WxRequestUtil.get(WxConstants.DELETE_MENU + "?access_token=" + accessToken, null, BaseResponse.class);
         return true;
     }
 
@@ -289,47 +322,47 @@ public class WxPubUtil {
         return createCard(param, getAccessToken(request).getAccessToken());
     }
 
-    public static ErrorResponse importCode(String cardId, List<String> codeList, String accessToken) {
+    public static BaseResponse importCode(String cardId, List<String> codeList, String accessToken) {
         Map<String, Object> param = new HashMap<>();
         param.put("card_id", cardId);
         param.put("code", codeList);
-        return WxRequestUtil.post(WxConstants.IMPORT_CODE + "?access_token=" + accessToken, param, ErrorResponse.class);
+        return WxRequestUtil.post(WxConstants.IMPORT_CODE + "?access_token=" + accessToken, param, BaseResponse.class);
     }
 
-    public static ErrorResponse importCode(String cardId, List<String> codeList) {
+    public static BaseResponse importCode(String cardId, List<String> codeList) {
         return importCode(cardId, codeList, getAccessToken().getAccessToken());
     }
 
-    public static ErrorResponse importCode(String cardId, List<String> codeList, AccessTokenRequest request) {
+    public static BaseResponse importCode(String cardId, List<String> codeList, AccessTokenRequest request) {
         return importCode(cardId, codeList, getAccessToken(request).getAccessToken());
     }
 
-    public static ErrorResponse getCodeCountByCardId(String cardId, String accessToken) {
+    public static BaseResponse getCodeCountByCardId(String cardId, String accessToken) {
         Map<String, Object> param = new HashMap<>();
         param.put("card_id", cardId);
-        return WxRequestUtil.post(WxConstants.GET_CODE_COUNT_BY_CARD_ID, param, ErrorResponse.class);
+        return WxRequestUtil.post(WxConstants.GET_CODE_COUNT_BY_CARD_ID, param, BaseResponse.class);
     }
 
-    public static ErrorResponse getCodeCountByCardId(String cardId, AccessTokenRequest request) {
+    public static BaseResponse getCodeCountByCardId(String cardId, AccessTokenRequest request) {
         return getCodeCountByCardId(cardId, getAccessToken(request).getAccessToken());
     }
 
-    public static ErrorResponse getCodeCountByCardId(String cardId) {
+    public static BaseResponse getCodeCountByCardId(String cardId) {
         return getCodeCountByCardId(cardId, getAccessToken().getAccessToken());
     }
 
-    public static ErrorResponse checkCode(String cardId, List<String> codeList, String accessToken) {
+    public static BaseResponse checkCode(String cardId, List<String> codeList, String accessToken) {
         Map<String, Object> param = new HashMap<>();
         param.put("card_id", cardId);
         param.put("code", codeList);
-        return WxRequestUtil.post(WxConstants.CHECK_CODE + "?access_token=" + accessToken, param, ErrorResponse.class);
+        return WxRequestUtil.post(WxConstants.CHECK_CODE + "?access_token=" + accessToken, param, BaseResponse.class);
     }
 
-    public static ErrorResponse checkCode(String cardId, List<String> codeList) {
+    public static BaseResponse checkCode(String cardId, List<String> codeList) {
         return checkCode(cardId, codeList, getAccessToken().getAccessToken());
     }
 
-    public static ErrorResponse checkCode(String cardId, List<String> codeList, AccessTokenRequest request) {
+    public static BaseResponse checkCode(String cardId, List<String> codeList, AccessTokenRequest request) {
         return checkCode(cardId, codeList, getAccessToken(request).getAccessToken());
     }
 
@@ -340,4 +373,67 @@ public class WxPubUtil {
     public static SendMessageResponse sendMessageByOpenId(Map param) {
         return sendMessageByOpenId(param, getAccessToken().getAccessToken());
     }
+
+    public static CreateCardQrCodeResponse createCardQrCode(String accessToken, CreateCardQRCodeRequest createCardQRCodeRequest) {
+        Map<String, Object> paramMap = new HashMap<>();
+        if (createCardQRCodeRequest.getCardList().size() == 1) {
+            //创建单张卡券
+            CreateCardQRCodeRequest.CardInfo cardInfo = createCardQRCodeRequest.getCardList().get(0);
+            paramMap.put("action_name", "QR_CARD");
+            paramMap.put("expire_seconds", createCardQRCodeRequest.getExpireSeconds());
+            Map<String, Object> cardMap = new HashMap<>();
+            Map<String, Object> actionInfo = new HashMap<>();
+            cardMap.put("card_id", cardInfo.getCardId());
+            cardMap.put("code", cardInfo.getCode());
+            cardMap.put("openid", cardInfo.getOpenid());
+            cardMap.put("is_unique_code", cardInfo.getIsUniqueCode());
+            cardMap.put("outer_str", cardInfo.getOuterStr());
+            actionInfo.put("card", cardMap);
+            paramMap.put("action_info", actionInfo);
+        } else {
+            List<CreateCardQRCodeRequest.CardInfo> cardInfoList = new ArrayList<>();
+            paramMap.put("action_name", "QR_MULTIPLE_CARD");
+            Map<String, Object> multCard = new HashMap<>();
+            Map<String, Object> actionInfo = new HashMap<>();
+            List<Map<String, Object>> cardList = new ArrayList<>();
+            paramMap.put("expire_seconds", createCardQRCodeRequest.getExpireSeconds());
+            createCardQRCodeRequest.getCardList().forEach(card -> {
+                Map<String, Object> cardMap = new HashMap<>();
+                cardMap.put("card_id", card.getCardId());
+                cardMap.put("code", card.getCode());
+                cardMap.put("openid", card.getOpenid());
+                cardMap.put("is_unique_code", card.getIsUniqueCode());
+                cardMap.put("outer_str", card.getOuterStr());
+                cardList.add(cardMap);
+            });
+            multCard.put("card_list", cardList);
+            actionInfo.put("multiple_card", multCard);
+            paramMap.put("action_info", actionInfo);
+        }
+        return WxRequestUtil.post(WxConstants.CREATE_CARD_QRCODE + "?access_token=" + accessToken, paramMap, CreateCardQrCodeResponse.class);
+    }
+
+    public static CreateCardLandingPageResponse createCardLandingPage(String accessToken, CreateCardLandingPageRequest createCardLandingPageRequest) {
+        return WxRequestUtil.post(WxConstants.CREATE_LANDING_PAGE + "?access_token=" + accessToken, BeanUtil.beanToMap(createCardLandingPageRequest, false, true, true), CreateCardLandingPageResponse.class);
+    }
+
+    public static CardGetMpNewResponse getMpNewContent(String cardId) {
+        return getMpNewContent(cardId, getAccessToken().getAccessToken());
+    }
+
+    public static CardGetMpNewResponse getMpNewContent(String cardId, String accessToken) {
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("card_id", cardId);
+        return WxRequestUtil.post(WxConstants.GET_MP_NEW_CONTENT + "?access_token=" + accessToken, paramMap, CardGetMpNewResponse.class);
+    }
+
+    public static CardGetMpNewResponse getMpNewContent(String cardId, AccessTokenRequest accessTokenRequest) {
+        return getMpNewContent(cardId, getAccessToken(accessTokenRequest).getAccessToken());
+    }
+
+    public static BaseResponse addKfAccount(String accessToken, KfAccountRequest kfAccountRequest) {
+        return WxRequestUtil.post(WxConstants.ADD_KF_ACCOUNT + "?access_token=" + accessToken, BeanUtil.beanToMap(kfAccountRequest, false, true, true), BaseResponse.class);
+    }
+
+
 }

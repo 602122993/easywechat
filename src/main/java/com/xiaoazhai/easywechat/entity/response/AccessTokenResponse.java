@@ -11,7 +11,7 @@ import lombok.Data;
  * </p>
  */
 @Data
-public class AccessTokenResponse extends ErrorResponse {
+public class AccessTokenResponse extends BaseResponse {
     /**
      * 网页授权接口调用凭证
      */

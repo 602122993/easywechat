@@ -8,7 +8,7 @@ import lombok.Data;
  * 发送消息返回结果
  */
 @Data
-public class SendMessageResponse extends ErrorResponse {
+public class SendMessageResponse extends BaseResponse {
 
     private String msgId;
 

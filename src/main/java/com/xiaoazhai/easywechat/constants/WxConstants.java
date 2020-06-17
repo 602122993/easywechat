@@ -10,6 +10,14 @@ package com.xiaoazhai.easywechat.constants;
 public class WxConstants {
 
     /**
+     * accesstoken缓存key
+     */
+    public static final String ACCESS_TOKEN_CACHE = "ACCESS_TOKEN_CACHE";
+
+    public static final String WX_CARD_TICKET = "WX_CARD_TICKET";
+
+
+    /**
      * 统一下单
      */
     public static final String UNIFIED_ORDER = "https://api.mch.weixin.qq.com/pay/unifiedorder";
@@ -105,4 +113,18 @@ public class WxConstants {
      * 创建卡券二维码
      */
     public static final String CREATE_CARD_QRCODE = "https://api.weixin.qq.com/card/qrcode/create";
+    /**
+     * 创建卡券货架
+     */
+    public static final String CREATE_LANDING_PAGE = "https://api.weixin.qq.com/card/landingpage/create";
+    /**
+     * 获取图文消息
+     */
+    public static final String GET_MP_NEW_CONTENT = "https://api.weixin.qq.com/card/mpnews/gethtml";
+    /**
+     * 添加客服账号
+     */
+    public static final String ADD_KF_ACCOUNT="https://api.weixin.qq.com/customservice/kfaccount/add";
+
+
 }

@@ -8,7 +8,7 @@ import lombok.Data;
  * 微信红包返回体
  */
 @Data
-public class WxRedPackResponse extends ErrorResponse {
+public class WxRedPackResponse extends BaseResponse {
     /**
      * 返回状态吗
      */

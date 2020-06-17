@@ -6,7 +6,7 @@ import lombok.Data;
  * js签名返回结果
  */
 @Data
-public class JSSDKResponse extends ErrorResponse {
+public class JSSDKResponse extends BaseResponse {
     /**
      * 随机字符串
      */
